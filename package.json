@@ -1,0 +1,41 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "host": "nuxt dev --host",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/image": "^1.7.0",
+    "@nuxtjs/tailwindcss": "^6.12.0",
+    "@tiptap/extension-character-count": "^2.4.0",
+    "@tiptap/extension-gapcursor": "^2.4.0",
+    "@tiptap/extension-link": "^2.4.0",
+    "@vee-validate/zod": "^4.13.0",
+    "bcrypt": "^5.1.1",
+    "nuxt-mongoose": "^1.0.6",
+    "nuxt-tiptap-editor": "^1.1.2",
+    "vue": "^3.4.27",
+    "vue-router": "^4.3.2",
+    "vue-virtual-scroller": "^2.0.0-beta.8",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@nuxtjs/supabase": "^1.2.2",
+    "@tiptap/extension-document": "^2.4.0",
+    "@tiptap/extension-image": "^2.4.0",
+    "@tiptap/extension-placeholder": "^2.4.0",
+    "@tiptap/html": "^2.4.0",
+    "@vee-validate/nuxt": "^4.12.8",
+    "@vite-pwa/assets-generator": "^0.2.4",
+    "@vite-pwa/nuxt": "^0.8.0",
+    "@vueuse/nuxt": "^10.10.0",
+    "nuxt": "^3.12.1",
+    "nuxt-icon": "^0.6.10"
+  }
+}

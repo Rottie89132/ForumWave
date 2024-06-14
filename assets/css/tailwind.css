@@ -1,0 +1,188 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    min-height: calc(100% + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+::-webkit-scrollbar {
+    scroll-margin: 5em;
+    @apply w-4 hidden;
+}
+
+::-webkit-scrollbar-track {
+    @apply hidden;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-neutral-900 dark:bg-white dark:hover:bg-white hover:bg-neutral-800 rounded-full;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    @apply lighty ring-1 ring-black outline-none appearance-none;
+}
+
+.menu-enter-active,
+.menu-leave-active {
+    transition: all 0.6s;
+}
+
+.menu-enter-from,
+.menu-leave-to {
+    @apply opacity-0;
+}
+
+
+.page-enter-active,
+.page-leave-active {
+    transition: all 0.6s;
+}
+
+.page-enter-from,
+.page-leave-to {
+    @apply opacity-0;
+}
+
+
+@layer components {
+    .btn-Input {
+        border-radius: 0.8em;
+        @apply w-full p-2 px-3 font-normal text-black bg-transparent border border-black appearance-none;
+    }
+
+    .btn-Input:focus {
+        @apply ring-1 ring-black outline-none;
+    }
+
+    .btn-login {
+        border-radius: 0.8em;
+        @apply p-3 px-3 font-semibold text-white bg-neutral-900;
+    }
+
+    .btn-login:hover {
+        @apply bg-neutral-800;
+    }
+
+    .btn-login:focus {
+        @apply ring-1 ring-neutral-800;
+    }
+}
+
+@layer utilities {
+    .lighty {
+        -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
+        -webkit-text-fill-color: #000000 !important;
+        box-shadow: 0 0 0 30px #ffffff inset !important;
+        background-clip: content-box !important;
+    }
+
+    .otpLight {
+        -webkit-box-shadow: 0 0 0 30px #ffffff inset !important;
+        -webkit-text-fill-color: #000000 !important;
+        box-shadow: 0 0 0 30px #ffffff inset !important;
+        background-clip: content-box !important;
+    }
+
+    .otpDark {
+        -webkit-box-shadow: 0 0 0 30px #171717 inset !important;
+        -webkit-text-fill-color: #ffffff !important;
+        box-shadow: 0 0 0 30px #171717 inset !important;
+        background-clip: content-box !important;
+    }
+}
+
+.tiptapEditor img.ProseMirror-selectednode {
+    @apply border-2;
+}
+
+.TipTapEditorImage {
+    @apply w-full md:w-fit md:h-fit md:max-w-[35vw] h-[20vh] select-none rounded-md object-cover border border-gray-400;
+}
+
+.TipTapImage {
+    @apply w-full md:h-full md:max-h-[50vh] min-h-[20vh] max-h-[35vh] select-none rounded-md object-cover border border-gray-400;
+}
+
+.TipTapVideo {
+    @apply w-full overflow-hidden md:h-full md:max-h-[60vh] min-h-[20vh] max-h-[35vh] select-none rounded-md object-cover border border-gray-400;;
+}
+
+.TipTapEditorVideo {
+    @apply w-full md:w-fit md:h-fit md:max-w-[35vw] h-[20vh] select-none rounded-md object-cover border border-gray-400;
+}
+
+.tiptapEditor {
+    @apply h-[40vh] md:h-[60vh] appearance-none overflow-auto outline-none rounded-md;
+}
+
+.tiptap {
+    @apply h-fit appearance-none overflow-auto outline-none rounded-md;
+}
+
+.TipTapLink {
+    @apply text-[#376A7A] cursor-pointer font-semibold;
+}
+
+.tiptap>*+* {
+    margin-top: 0.75em;
+}
+
+.tiptap h1 {
+    @apply text-black text-balance text-2xl md:text-3xl font-bold line-clamp-3 ;
+}
+
+.tiptap h1 .TipTapLink {
+    @apply font-extrabold;
+}
+
+.tiptap h2 {
+    @apply text-gray-800 text-balance text-xl font-semibold;
+}
+
+.tiptap h2 .TipTapLink {
+    @apply font-bold;
+}
+
+.tiptap p {
+    @apply text-gray-700 text-balance text-base;
+}
+
+.bullet_class {
+    @apply list-disc list-outside pl-5 text-slate-700 font-medium;
+}
+
+.order_class {
+    @apply list-decimal list-outside pl-6 text-slate-700 font-medium;
+}
+
+li::marker {
+    @apply text-[#376A7A] font-black;
+}
+
+.tiptap .is-empty::before {
+    @apply float-left text-gray-400 pointer-events-none;
+    content: attr(data-placeholder);
+    height: 0;
+}
+
+.bubble-menu {
+    @apply flex bg-black p-2 rounded-md;
+}
+
+.bubble-menu button {
+    @apply border-none bg-transparent text-white text-sm font-medium px-1 opacity-60;
+}
+
+.bubble-menu button:hover,
+.bubble-menu button.is-active {
+    @apply opacity-100;
+}
