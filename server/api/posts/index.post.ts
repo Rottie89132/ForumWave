@@ -3,17 +3,6 @@ import sharp from "sharp";
 import crypto from "crypto";
 import { serverSupabaseServiceRole } from '#supabase/server'
 
-const updateContentSrc = (content: any, files: object[]) => {
-
-	content.content.forEach((item: any) => {
-		files.forEach((file: any) => {
-			if (item.type === "image" && item.attrs.title === file.title) { item.attrs.src = file.src; }
-			else if (item.type === "video" && item.attrs.title === file.title) { item.attrs.src = file.src; }
-		});
-	});
-	return content;
-}
-
 export default defineEventHandler(async (event) => {
 	return new Promise((resolve, reject) => {
 		setTimeout(async () => {
@@ -70,10 +59,13 @@ export default defineEventHandler(async (event) => {
 				});
 			}
 
+			const { content, error } = updateContentSrc(readableData.content, FilePaths)
+			if (error) return reject(error)
+
 			await Posts.create({
 				UserId: user.Id,
 				PostId: PostId,
-				Content: updateContentSrc(readableData.content, FilePaths)
+				Content: content
 			}).then(() => {
 				return resolve({
 					statusCode: 200,
@@ -91,3 +83,33 @@ export default defineEventHandler(async (event) => {
 		}, 1000);
 	});
 });
+
+const updateMediaSources = (content: any, files: any) => {
+	content.content.forEach((item: any) => {
+		files.forEach((file: any) => {
+			if ((item.type === "image" || item.type === "video") && item.attrs.title === file.title) {
+				item.attrs.src = file.src;
+			}
+		});
+	});
+};
+
+const validateContent = (content: any) => {
+	let error = null;
+	content.content.forEach((item: any) => {
+		if (item.type === "heading" && ((item.attrs.level == 1 && item.content === undefined) || item.attrs.level != 1)) {
+			error = {
+				statusCode: 400,
+				statusMessage: "Bad Request",
+				message: "Title is verplicht en moet een H1 zijn"
+			};
+		}
+	});
+	return error;
+};
+
+const updateContentSrc = (content: any, files: object[]) => {
+	updateMediaSources(content, files);
+	let error = validateContent(content);
+	return { content, error };
+}

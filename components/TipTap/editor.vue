@@ -1,22 +1,21 @@
 <template>
 	<div v-if="editor">
-		<div class="border rounded-xl border-gray-200 w-full h-full">
-			<TipTapMenu :submit="handleListData" :loading v-model="files" class="hidden md:flex bg-gray-100 mb-2 p-2 border-b border-gray-200 rounded-t-xl items-center" :editor="editor" />
-			<TiptapEditorContent class="tiptapEditor md:py-1 mb-6 md:mb-1 pt-3 px-3" :editor="editor" />
-			<TipTapMenu v-model="files" class="flex md:hidden bg-gray-100 z-30 p-2 border-t border-gray-200 items-center" :editor="editor" :submit="handleListData" :loading />
-			<div class="flex md:hidden gap-2 bg-gray-100 p-2 border-t border-gray-400 rounded-b-xl items-center">
-				<button @click="submit(handleFormData)" class="bg-[#376A7A] text-[#ffffff] px-4 py-2 md:w-fit rounded-lg font-semibold">
-					<icon v-if="loading" class="animate-spin" name="solar:refresh-circle-bold" size="1.6em"> </icon>
-					<span v-else>Posten</span>
-				</button>
-			</div>
+		<div :class="modalStatus.error ? ' border-red-600 border-2 ' : 'border-gray-200'"
+			class="border rounded-xl w-full h-full">
+			<TipTapMenu :submit="handleListData" :loading v-model="files"
+				class="hidden md:flex bg-gray-100 mb-2 p-2 border-b border-gray-200 rounded-t-xl items-center"
+				:editor="editor" />
+			<TiptapEditorContent class="tiptapEditor md:py-1 mb-2 md:mb-1 pt-3 px-3" :editor="editor" />
+			<TipTapMenu v-model="files"
+				class="flex md:hidden bg-gray-100 z-30 border-t rounded-b-xl border-gray-200 items-center"
+				:editor="editor" :submit="handleListData" :loading />
 		</div>
 	</div>
 </template>
 
 <script lang="ts" setup>
 
-	import video from "../../composables/Editorvideo";
+	import video from "../../composables/video";
 	import Image from "@tiptap/extension-image";
 	import Placeholder from "@tiptap/extension-placeholder";
 
@@ -24,7 +23,7 @@
 	const Installed = ref(false);
 	const files = ref([]);
 	const Output = ref({});
-	const modalStatus = defineModel();
+	const modalStatus: any = defineModel();
 
 	const { loading, content, submit } = defineProps<{
 		loading: Boolean;
@@ -77,7 +76,7 @@
 			}),
 			Image.configure({
 				HTMLAttributes: {
-					class: "TipTapEditorImage TipTapMedia",
+					class: "TipTapImage TipTapMedia",
 				},
 			}),
 			Placeholder.configure({
@@ -88,6 +87,8 @@
 			}),
 		],
 	});
+
+	//TipTapEditorImage
 
 	const closeModal = () => {
 		modalStatus.value = false;

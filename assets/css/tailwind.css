@@ -104,9 +104,6 @@ input:-webkit-autofill:focus {
     @apply border-2;
 }
 
-.TipTapEditorImage {
-    @apply w-full md:w-fit md:h-fit md:max-w-[35vw] h-[20vh] select-none rounded-md object-cover border border-gray-400;
-}
 
 .TipTapImage {
     @apply w-full md:h-full md:max-h-[50vh] min-h-[20vh] max-h-[35vh] select-none rounded-md object-cover border border-gray-400;
@@ -116,9 +113,6 @@ input:-webkit-autofill:focus {
     @apply w-full overflow-hidden md:h-full md:max-h-[60vh] min-h-[20vh] max-h-[35vh] select-none rounded-md object-cover border border-gray-400;;
 }
 
-.TipTapEditorVideo {
-    @apply w-full md:w-fit md:h-fit md:max-w-[35vw] h-[20vh] select-none rounded-md object-cover border border-gray-400;
-}
 
 .tiptapEditor {
     @apply h-[40vh] md:h-[60vh] appearance-none overflow-auto outline-none rounded-md;

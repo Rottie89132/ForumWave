@@ -5,7 +5,8 @@
 			<FieldInput :name="'email'" :type="'email'" :label="'Email adress'" />
 			<FieldInput :name="'wachtwoord'" :type="'password'" :label="'Nieuwe wachtwoord'" />
 			<FieldInput :name="'confirmatie'" :type="'password'" :label="'Confirmatie'" />
-			<button class="bg-[#376A7A] text-[#ffffff] px-4 py-2 w-full rounded-xl font-semibold mt-4">Reset</button>
+			<button
+				class="bg-[#103C4A] transition-all duration-200 hover:bg-[#18343c] text-[#ffffff] px-4 py-2 w-full rounded-xl font-semibold mt-4">Reset</button>
 		</Form>
 	</div>
 </template>

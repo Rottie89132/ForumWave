@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   modules: [
     "@nuxtjs/tailwindcss",
     "@nuxt/image",
@@ -72,7 +72,7 @@ export default defineNuxtConfig({
     },
   },
   app: {
-    pageTransition: { name: 'page', mode: 'out-in' },
+    //pageTransition: { name: 'page', mode: 'out-in' },
     head: {
       meta: [
         { name: 'theme-color', media: '(prefers-color-scheme: light)', content: "#FFFFFF" },

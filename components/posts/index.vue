@@ -1,9 +1,8 @@
 <template>
 	<div @click="navigateTo(`posts/${item.data.id}`)" class="p-1 rounded-md border border-gray-400 h-[28vh] w-[10em]">
 		<div class="rounded-md h-full w-full background_image bg-slate-50"
-			:style="item.data?.media ? `background-image: url('${item.data?.media}');` : null">
-			<div :class="item.data?.media ? 'bg-black bg-opacity-50 text-white' : ' text-black'"
-				class="p-2 flex items-end rounded-md w-full h-full">
+			:style="item.data?.media ? `background-image: url('${item.data?.media}');` : `background-image: url('/Post.png')`">
+			<div class="p-2 bg-black bg-opacity-50 text-white flex items-end rounded-md w-full h-full">
 				<div class="flex gap-4 flex-col justify-end pb-2">
 					<div class="">
 						<h1 class=" font-black text-lg line-clamp-2">{{ item.data?.title }}</h1>

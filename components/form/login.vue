@@ -7,9 +7,10 @@
             <div @click="handleReset"
                 class="text-sm select-none cursor-pointer text-neutral-800 hover:text-neutral-900">Wachtwoord vergeten?
             </div>
-            <button class="bg-[#103C4A] text-[#ffffff] px-4 py-2 w-full rounded-xl font-semibold mt-4">
+            <button
+                class="bg-[#103C4A] transition-all duration-200 hover:bg-[#18343c] text-[#ffffff] px-4 py-2 w-full rounded-xl font-semibold mt-4">
                 <span v-if="loading">
-                    <icon class=" animate-spin" name="solar:refresh-circle-bold" size="1.5em"></icon>
+                    <icon class=" animate-spin" name="solar:refresh-broken" size="1.5em"></icon>
                 </span>
                 <span v-else>Inlogen</span>
 

@@ -7,7 +7,7 @@
           <div tabindex="0" class="mx-6 mb-[12%] md:mb-0 outline-none rounded-xl" ref="modal">
             <Transition name="modalDelay">
               <div ref="modalDelay" v-if="DelayStatus">
-                <div class="p-5 bg-white rounded-2xl w-[90vw]">
+                <div class="p-5 bg-white rounded-2xl w-[90vw] sm:w-[75vw] md:w-[80vw] lg:w-[70vw] xl:w-[50vw]">
                   <div class="flex items-center mb-2 justify-between">
                     <h1 class="text-3xl font-bold">{{ modalStatus.type }}</h1>
                     <button @click="closeModal">
