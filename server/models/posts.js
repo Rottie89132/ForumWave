@@ -9,7 +9,6 @@ export const Posts = defineMongooseModel({
         Content: { type: Object, required: true, unique: false },
         meta: {
             Likes: { type: Number, required: false, default: 0 },
-            Dislikes: { type: Number, required: false, default: 0 },
             Comments: { type: Number, required: false, default: 0 },
             views: { type: Number, required: false, default: 0 }
         },

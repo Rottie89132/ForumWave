@@ -9,16 +9,15 @@
 					<div class="flex items-center gap-2">
 						<button @click="refresh"
 							class="border-[#376A7A] border text-[#376A7A] p-2 w-fit rounded-xl flex items-center justify-center">
-							<icon name="solar:refresh-broken" size="1.4em"
-								:class="loading ? 'rotate-180 animate-spin' : ''"></icon>
+							<icon name="bx:loader-circle" size="1.4em" :class="loading ? ' animate-spin' : ''"></icon>
 						</button>
 						<button
-							class="border-[#376A7A] text-sm w-16 border text-[#376A7A] p-[0.59rem] rounded-xl flex items-center justify-center">
+							class="border-[#376A7A] text-sm w-16 border text-[#376A7A] p-[0.56rem] rounded-xl flex items-center justify-center">
 							{{ Pages }}
 						</button>
 						<button @click="$router.back()"
 							class="bg-[#376A7A] border-[#376A7A] border text-[#ffffff] p-2 w-fit rounded-xl flex items-center justify-center">
-							<icon name="solar:forward-line-duotone" size="1.4em" class="rotate-180"></icon>
+							<icon name="bx:arrow-back" size="1.4em" class=""></icon>
 						</button>
 					</div>
 				</div>
@@ -27,6 +26,14 @@
 
 			<div class="mt-2 z-20">
 				<div class="mb-16">
+					<div class=" mb-3">
+						<h1 class=" font-bold ">
+							Overzicht van {{ user.user.Username || "Onbekent" }}
+						</h1>
+						<p v-if="items.length < 1" class=" opacity-60 font-semibold ">
+							Er zijn nog geen posts beschikbaar
+						</p>
+					</div>
 					<div v-bind="containerProps" class="h-[71.6vh] md:h-[75.5vh] overflow-scroll w-full">
 						<div v-bind="wrapperProps" class="flex flex-col gap-3 snap-y snap-proximity scroll-smooth">
 							<div class="bg-gray-50 h-[142px] p-3 overflow-hidden rounded-md border"

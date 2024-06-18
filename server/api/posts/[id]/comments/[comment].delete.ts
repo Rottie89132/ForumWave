@@ -32,6 +32,12 @@ export default defineEventHandler((event) => {
 			await Reacties.findByIdAndDelete(comment);
 			await Posts.findByIdAndUpdate(query, { $inc: { "meta.Comments": -1 } });
 
+			const updateUsers: any = await User.find()
+			for (const user of updateUsers) {
+				if (user.CommentsLiked.includes(comment)) await User.findByIdAndUpdate(user._id, { $pull: { CommentsLiked: comment } });
+				if (user.CommentsDisliked.includes(comment)) await User.findByIdAndUpdate(user._id, { $pull: { CommentsDisliked: comment } });
+			}
+
 			return resolve({
 				statusCode: 200,
 				statusMessage: "OK",

@@ -2,27 +2,24 @@
 	<div>
 		<div class="sm:px-28 md:px-30 lg:px-52 xl:px-80 pl-5 py-3 fixed w-full h-full">
 			<div class="flex items-center justify-between gap-4 pr-5">
-				<h1 class="text-lg font-bold">Hallo <NuxtLink to="/user/me" class=" font-black text-[#376A7A]">{{ User.user.Name }}</NuxtLink>
+				<h1 class="text-lg font-bold">
+					Hallo <NuxtLink to="/user/me" class="font-black text-[#376A7A]">{{ User.user.Name }}</NuxtLink>
 				</h1>
-
 				<div class="flex items-center gap-2">
 					<button @click="openCreatePostModal"
 						class="border-[#376A7A] bg-[#376A7A] border text-white font-medium p-2 w-fit rounded-xl flex items-center justify-center">
-						<icon name="solar:add-circle-line-duotone" size="1.4em" class=""></icon>
+						<icon name="bx:plus-circle" size="1.4em" class=""></icon>
 					</button>
 					<button @click="refresh"
 						class="border-[#376A7A] border text-[#376A7A] font-medium p-2 w-fit rounded-xl flex items-center justify-center">
-						<icon name="solar:refresh-broken" size="1.4em"
-							:class="loading ? ' rotate-180 animate-spin' : ''"></icon>
+						<icon name="bx:loader-circle" size="1.4em" :class="loading ? ' animate-spin' : ''"></icon>
 					</button>
 					<button @click="logout"
-						class="border-[#376A7A] border text-[#376A7A] font-medium p-2 px-5 w-fit rounded-xl flex items-center justify-center">
-						Uitlogen
-					</button>
+						class="border-[#376A7A] border text-[#376A7A] font-medium p-2 px-5 w-fit rounded-xl flex items-center justify-center">Uitlogen</button>
 				</div>
 			</div>
 
-			<div class=" mt-4">
+			<div class="mt-4">
 				<h1 class="text-4xl font-bold">ForumWave</h1>
 			</div>
 
@@ -32,7 +29,7 @@
 						aria-label="zoeken" autocomplete="current-zoeken" />
 
 					<button class="bg-[#376A7A] text-[#ffffff] p-2 w-fit rounded-xl flex items-center justify-center">
-						<icon name="solar:forward-line-duotone" size="1.6em" class="text-white"></icon>
+						<icon name="bx:arrow-back" size="1.6em" class="text-white rotate-180"></icon>
 					</button>
 				</Form>
 			</div>
@@ -72,13 +69,12 @@
 				</div>
 			</div>
 		</div>
-
 		<TipTapModal v-model="status">
 			<p class="mb-3">Hier kan je een nieuwe post aanmaken</p>
 			<hr class="hidden md:block my-2" />
 			<TipTapEditor v-model="status" :loading :content :submit />
 			<div v-if="status?.error" class="flex justify-start gap-2 mt-2">
-				<p class=" text-red-600 text-sm">
+				<p class="text-red-600 text-sm">
 					{{ status.error }}
 				</p>
 			</div>
@@ -87,7 +83,6 @@
 </template>
 
 <script setup>
-
 	definePageMeta({
 		middleware: "auth",
 	});
@@ -153,8 +148,8 @@
 		loading.value = true;
 		const result = callback();
 
-		status.value.error = undefined
-		
+		status.value.error = undefined;
+
 		const { data, error } = await useFetch("/api/posts", {
 			method: "POST",
 			body: result,
@@ -197,7 +192,6 @@
 		popularItems.value = popularPosts.value?.posts;
 		popularTotalPages.value = popularPosts.value?.totalPages;
 		popularPages.value = 1;
-
 	};
 
 	const { list, containerProps, wrapperProps } = useVirtualList(items, {
@@ -212,39 +206,47 @@
 		itemWidth: 160,
 	});
 
-	useInfiniteScroll(containerProps.ref, async () => {
-		if (itemsPages.value >= itemsTotalPages.value) return;
-		loading.value = true;
+	useInfiniteScroll(
+		containerProps.ref,
+		async () => {
+			if (itemsPages.value >= itemsTotalPages.value) return;
+			loading.value = true;
 
-		itemsPages.value += 1;
-		const Post = await $fetch(`/api/posts?page=${itemsPages.value}`);
+			itemsPages.value += 1;
+			const Post = await $fetch(`/api/posts?page=${itemsPages.value}`);
 
-		setTimeout(() => {
-			loading.value = false;
-		}, 500);
+			setTimeout(() => {
+				loading.value = false;
+			}, 500);
 
-		items.value.push(...Post.posts);
-		itemsTotalPages.value = Post.totalPages;
-	}, {
-		direction: "right",
-		distance: 8,
-	});
+			items.value.push(...Post.posts);
+			itemsTotalPages.value = Post.totalPages;
+		},
+		{
+			direction: "right",
+			distance: 8,
+		}
+	);
 
-	useInfiniteScroll(popularContainerProps.ref, async () => {
-		if (popularPages.value >= popularTotalPages.value) return;
-		loading.value = true;
+	useInfiniteScroll(
+		popularContainerProps.ref,
+		async () => {
+			if (popularPages.value >= popularTotalPages.value) return;
+			loading.value = true;
 
-		popularPages.value += 1;
-		const Post = await $fetch(`/api/posts?page=${popularPages.value}&popular=true`);
+			popularPages.value += 1;
+			const Post = await $fetch(`/api/posts?page=${popularPages.value}&popular=true`);
 
-		setTimeout(() => {
-			loading.value = false;
-		}, 500);
+			setTimeout(() => {
+				loading.value = false;
+			}, 500);
 
-		popularItems.value.push(...Post.posts);
-		popularTotalPages.value = Post.totalPages;
-	}, {
-		direction: "right",
-		distance: 8,
-	});
+			popularItems.value.push(...Post.posts);
+			popularTotalPages.value = Post.totalPages;
+		},
+		{
+			direction: "right",
+			distance: 8,
+		}
+	);
 </script>

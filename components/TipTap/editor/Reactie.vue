@@ -14,10 +14,8 @@
 </template>
 
 <script lang="ts" setup>
-
-    import video from "../../../composables/video";
-    import Image from "@tiptap/extension-image";
-    import Placeholder from "@tiptap/extension-placeholder";
+    import { Image } from "@tiptap/extension-image";
+    import video from "@/composables/video";
 
     const { $pwa }: any = useNuxtApp();
     const Installed = ref(false);

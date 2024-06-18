@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
             const posts: any = await Posts.findById(query);
             const author: any = await User.findById(posts.UserId)
             const PostUser: any = await User.findById(user.Id)
-            const Comments = await Reacties.find({ ParentId: query }).sort({ CreatedAt: -1 });
+            const Comments = await Reacties.find({ ParentId: query }).sort({ "meta.Likes": -1, CreatedAt: -1 });
 
             const CommentsArray: object[] = []
             for (const item of Comments) {
@@ -23,11 +23,13 @@ export default defineEventHandler(async (event) => {
                 CommentsArray.push({ 
                     ...item.toObject(), 
                     author: author.Username,
-                    owned: item.UserId === user?.Id || false
+                    owned: item.UserId === user?.Id || false,
+                    liked: PostUser?.CommentsLiked.includes(item._id) || false,
+                    disliked: PostUser?.CommentsDisliked.includes(item._id) || false
                 });
             }
 
-            if (!PostUser?.Vists.includes(query) || posts.UserId != user.Id) {
+            if (!PostUser?.Vists.includes(query) && posts.UserId != user.Id) {
                 await Posts.findByIdAndUpdate(query, { $inc: { "meta.views": 1 } });
                 await User.findByIdAndUpdate(user.Id, { $push: { Vists: query } });
             }
