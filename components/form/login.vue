@@ -10,7 +10,7 @@
             <button
                 class="bg-[#103C4A] transition-all duration-200 hover:bg-[#18343c] text-[#ffffff] px-4 py-2 w-full rounded-xl font-semibold mt-4">
                 <span v-if="loading">
-                    <icon class=" animate-spin" name="solar:refresh-broken" size="1.5em"></icon>
+                    <icon class=" rotate-180 animate-spin" name="solar:refresh-broken" size="1.5em"></icon>
                 </span>
                 <span v-else>Inlogen</span>
 

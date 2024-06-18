@@ -9,6 +9,7 @@ export default defineEventHandler(async (event) => {
 			const client = serverSupabaseServiceRole(event)
 			const SessionId: Record<string, any> | any = getCookie(event, "access-token")
 			const user: Record<string, any> | null = await useStorage("Sessions").getItem(SessionId)
+			const query = getRouterParams(event).id
 
 			if (!user) return reject({
 				statusCode: 401,
@@ -18,9 +19,10 @@ export default defineEventHandler(async (event) => {
 
 			const data = await readMultipartFormData(event);
 			const readableData = await useReadable(data);
-			const PostId = crypto.randomUUID();
+			const PostData: any = await Posts.findById(query);
 
-
+			const PostId = PostData.PostId;
+			
 			const Error = validateContent(readableData.content);
 			if(Error) return reject(Error)
 
@@ -65,10 +67,10 @@ export default defineEventHandler(async (event) => {
 
 			const { content, error } = updateContentSrc(readableData.content, FilePaths)
 			if (error) return reject(error)
+
 			
-			await Posts.create({
-				UserId: user.Id,
-				PostId: PostId,
+			
+			await Posts.findByIdAndUpdate(query, {
 				Content: content
 			}).then(() => {
 				return resolve({
@@ -99,26 +101,26 @@ const updateMediaSources = (content: any, files: any) => {
 };
 
 const validateContent = (content: any) => {
-    let error = null;
-    let hasH1 = false; 
-    let hasH2 = false; 
+	let error = null;
+	let hasH1 = false;
+	let hasH2 = false;
 
-    content.content.forEach((item: any) => {
-        if (item.type === "heading") {
-            if (item.attrs.level == 1 && item.content !== undefined) hasH1 = true; 
-            else if (item.attrs.level == 2) hasH2 = true; 
-        }
-    });
+	content.content.forEach((item: any) => {
+		if (item.type === "heading") {
+			if (item.attrs.level == 1 && item.content !== undefined) hasH1 = true;
+			else if (item.attrs.level == 2) hasH2 = true;
+		}
+	});
 
-    if (!hasH1) {
-        error = {
-            statusCode: 400,
-            statusMessage: "Bad Request",
-            message: "Title is verplicht en moet minstens één H1 bevatten"
-        };
-    }
+	if (!hasH1) {
+		error = {
+			statusCode: 400,
+			statusMessage: "Bad Request",
+			message: "Title is verplicht en moet minstens één H1 bevatten"
+		};
+	}
 
-    return error;
+	return error;
 };
 
 const updateContentSrc = (content: any, files: object[]) => {

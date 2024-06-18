@@ -15,7 +15,7 @@ export default defineEventHandler((event) => {
                 message: "The request has not been applied because it lacks valid authentication credentials for the target resource."
             })
 
-            const daysAgo = 2;
+            const daysAgo = 7;
             const thresholdDate = new Date();
             thresholdDate.setDate(thresholdDate.getDate() - daysAgo);
 

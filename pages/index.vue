@@ -2,7 +2,7 @@
 	<div>
 		<div class="sm:px-28 md:px-30 lg:px-52 xl:px-80 pl-5 py-3 fixed w-full h-full">
 			<div class="flex items-center justify-between gap-4 pr-5">
-				<h1 class="text-lg font-bold">Hallo <span class=" font-black text-[#376A7A]">{{ User.user.Name }}</span>
+				<h1 class="text-lg font-bold">Hallo <NuxtLink to="/user/me" class=" font-black text-[#376A7A]">{{ User.user.Name }}</NuxtLink>
 				</h1>
 
 				<div class="flex items-center gap-2">
@@ -12,7 +12,8 @@
 					</button>
 					<button @click="refresh"
 						class="border-[#376A7A] border text-[#376A7A] font-medium p-2 w-fit rounded-xl flex items-center justify-center">
-						<icon name="solar:refresh-broken" size="1.4em" :class="loading ? ' animate-spin' : ''"></icon>
+						<icon name="solar:refresh-broken" size="1.4em"
+							:class="loading ? ' rotate-180 animate-spin' : ''"></icon>
 					</button>
 					<button @click="logout"
 						class="border-[#376A7A] border text-[#376A7A] font-medium p-2 px-5 w-fit rounded-xl flex items-center justify-center">
@@ -86,6 +87,7 @@
 </template>
 
 <script setup>
+
 	definePageMeta({
 		middleware: "auth",
 	});

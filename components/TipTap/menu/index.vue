@@ -13,7 +13,7 @@
         </div>
         <div class=" hidden md:flex justify-end w-full">
             <button @click="submit" class="bg-[#376A7A] text-[#ffffff] px-4 py-1 md:w-fit rounded-lg font-semibold">
-                <icon v-if="loading" class=" animate-spin" name="solar:refresh-broken" size="1.4em"></icon>
+                <icon v-if="loading" class=" rotate-180 animate-spin" name="solar:refresh-broken" size="1.4em"></icon>
                 <span v-else>Posten</span>
             </button>
         </div>

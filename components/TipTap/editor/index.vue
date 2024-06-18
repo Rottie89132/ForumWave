@@ -15,7 +15,7 @@
 
 <script lang="ts" setup>
 
-	import video from "../../composables/video";
+	import video from "../../../composables/video";
 	import Image from "@tiptap/extension-image";
 	import Placeholder from "@tiptap/extension-placeholder";
 
@@ -87,12 +87,6 @@
 			}),
 		],
 	});
-
-	//TipTapEditorImage
-
-	const closeModal = () => {
-		modalStatus.value = false;
-	};
 
 	onMounted(() => {
 		if ($pwa.isPWAInstalled) Installed.value = true;

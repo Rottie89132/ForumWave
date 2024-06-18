@@ -113,6 +113,10 @@ input:-webkit-autofill:focus {
     @apply w-full overflow-hidden md:h-full md:max-h-[60vh] min-h-[20vh] max-h-[35vh] select-none rounded-md object-cover border border-gray-400;;
 }
 
+.tiptapEditorReactie {
+    @apply h-[20vh] md:h-[30vh] appearance-none overflow-auto outline-none rounded-md;
+}   
+
 
 .tiptapEditor {
     @apply h-[40vh] md:h-[60vh] appearance-none overflow-auto outline-none rounded-md;

@@ -35,7 +35,7 @@
 							<Icon name="solar:chat-round-dots-bold" size="1em"
 								class="group-hover:scale-150 group-hover:mr-[0.25rem] transition-all duration-150 ">
 							</Icon>
-							<span class=" group-hover:font-medium">{{ item.data?.meta?.comments || 0 }}</span>
+							<span class=" group-hover:font-medium">{{ item.data?.meta?.Comments || 0 }}</span>
 						</div>
 					</div>
 				</div>
