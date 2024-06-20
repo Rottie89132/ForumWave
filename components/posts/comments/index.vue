@@ -8,11 +8,16 @@
 </template>
 
 <script setup lang="ts">
-    const highlight = ref(useRoute().query.comment);
+	const highlight: any = ref(useRoute().query.comment);
 
-	setTimeout(() => {
-		location.replace(`#${highlight.value}`);
-	}, 500);
+	onMounted(() => {
+		if (highlight.value) {
+			setTimeout(() => {
+				const element: any = window.document.getElementById(highlight.value);
+				element.scrollIntoView({ block: "center", behavior: "smooth" });
+			}, 500);
+		}
+	});
 
 	defineProps<{
 		comments: any;

@@ -40,12 +40,14 @@ export default defineEventHandler((event) => {
 const transformPosts = async (data: any[], userId: any): Promise<any[]> => {
     const UserData: any = await User.findById(userId)
     const UserLikes = UserData.Likes
-    return data.map((item: any) => {
+    const promises = data.map(async (item: any) => {
         const itemdata = item.Content.content;
         const liked = UserLikes.includes(item.id)
 
         const headingItem = itemdata.find((item: any) => item.type === 'heading' && item.attrs.level === 1);
         const title = headingItem && headingItem.content && headingItem.content.length > 0 ? headingItem.content[0].text : '';
+
+        const author: any = await User.findById(item.UserId);
 
         const paragraphItem = itemdata.find((item: any) => item.type === 'paragraph');
         const content = paragraphItem && paragraphItem.content && paragraphItem.content.length > 0 ? paragraphItem.content[0].text : '';
@@ -58,8 +60,10 @@ const transformPosts = async (data: any[], userId: any): Promise<any[]> => {
             media,
             liked,
             meta: item.meta,
+            author: author.Username,
             UpdatedAt: item.UpdatedAt,
             CreatedAt: item.CreatedAt,
         };
     });
+    return Promise.all(promises);
 }
