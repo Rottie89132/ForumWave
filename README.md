@@ -20,6 +20,15 @@ yarn install
 bun install
 ```
 
+Make sure to add the following environment variables
+
+```env
+MONGODB_URI=""
+SUPABASE_URL=""
+SUPABASE_KEY=""
+SUPABASE_SERVICE_KEY=""
+```
+
 ## Development Server
 
 Start the development server on `http://localhost:3000`:
