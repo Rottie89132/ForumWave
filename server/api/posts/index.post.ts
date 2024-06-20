@@ -70,11 +70,14 @@ export default defineEventHandler(async (event) => {
 				UserId: user.Id,
 				PostId: PostId,
 				Content: content
-			}).then(() => {
+			}).then((data) => {
 				return resolve({
 					statusCode: 200,
 					statusMessage: "OK",
 					message: "Post created successfully",
+					data: {
+						PostId: data._id,
+					},
 				});
 			}).catch((err: Error) => {
 				console.error(err);

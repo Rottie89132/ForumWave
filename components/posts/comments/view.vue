@@ -1,7 +1,8 @@
 <template>
+
     <div class="flex items-center justify-between gap-1">
-        <div :class="comment?.meta?.Likes < 0 ? ' cursor-pointer' : ' '" @click=" comment?.meta?.Likes >= 0 ? '' : hide = !hide"
-            class="flex items-center gap-1">
+        <div :class="comment?.meta?.Likes < 0 ? ' cursor-pointer' : ' '"
+            @click="comment?.meta?.Likes >= 0 ? '' : (hide = !hide)" class="flex items-center gap-1">
             <NuxtLink :to="`/user/${comment.UserId}`">
                 <h1 class="text-[0.9rem] underline text-[#376A7A] font-semibold opacity-80">{{ comment.author ||
                     "Onbekent" }}</h1>
@@ -35,7 +36,7 @@
                 <Icon @click="upVoteComment(comment._id)" name="bx:bxs-upvote" size="1em"
                     :class="comment?.liked ? 'text-green-500 scale-125' : ''"
                     class="hover:text-green-500 hover:scale-125 transition-all duration-150"></Icon>
-                <span class="hover:font-medium"> {{ comment?.meta?.Likes || 0 }}</span>
+                <span class=""> {{ useCompact(comment?.meta?.Likes || 0) }}</span>
                 <Icon @click="downVoteComment(comment._id)" name="bx:bxs-downvote" size="1em"
                     :class="comment?.disliked ? 'text-red-500 scale-125' : ''"
                     class="hover:text-red-500 hover:scale-125 transition-all duration-150"></Icon>
@@ -47,8 +48,8 @@
 </template>
 
 <script setup lang="ts">
-
     const hide = ref(true);
+    
     defineProps<{
         comment: any;
         openEditPostModal: (Boolean: boolean, html?: string, id?: string) => void;
@@ -57,6 +58,4 @@
         upVoteComment: (id: string) => void;
         downVoteComment: (id: string) => void;
     }>();
-
-
 </script>

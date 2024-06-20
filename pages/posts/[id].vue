@@ -41,7 +41,6 @@
 					<div v-if="comments.length < 1" class="mt-2">
 						<p class="text-gray-400">Er zijn nog geen reacties beschikbaar</p>
 					</div>
-
 					<PostsComments v-else 
 						:comments 
 						:openEditPostModal 

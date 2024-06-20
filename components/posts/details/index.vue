@@ -13,7 +13,7 @@
                             <span>|</span>
                             <span>Bewerken</span>
                         </button>
-                        <button @click="OpenDeletePostModal(false, items.posts.items._id)"
+                        <button @click="OpenDeletePostModal(false, items.posts._id)"
                             class="text-[#376A7A] hover:bg-slate-100 bg-white border rounded-b-md p-1 px-2 flex items-center gap-2">
                             <icon name="bx:trash" size="1.2em" class=""> </icon>
                             <span>|</span>
@@ -48,19 +48,19 @@
                     <Icon v-else name="solar:heart-bold" size="1em"
                         class="group-hover:text-cyan-500 group-hover:scale-150 group-hover:mr-[0.25rem] transition-all duration-150">
                     </Icon>
-                    <span class="group-hover:font-medium"> {{ items?.posts.meta?.Likes || 0 }}</span>
+                    <span class="group-hover:font-medium"> {{ useCompact(items?.posts.meta?.Likes || 0) }}</span>
                 </div>
                 <span class="opacity-60"> | </span>
                 <div class="flex gap-1 items-center group transition-all duration-150">
                     <Icon name="solar:eye-bold" size="1em"
                         class="group-hover:scale-150 group-hover:mr-[0.25rem] transition-all duration-150"> </Icon>
-                    <span class="group-hover:font-medium">{{ items?.posts.meta?.views || 0 }}</span>
+                    <span class="group-hover:font-medium">{{ useCompact(items?.posts.meta?.views || 0) }}</span>
                 </div>
                 <span class="opacity-60"> | </span>
                 <div class="flex gap-1 items-center group transition-all duration-150">
                     <Icon name="solar:chat-round-dots-bold" size="1em"
                         class="group-hover:scale-150 group-hover:mr-[0.25rem] transition-all duration-150"> </Icon>
-                    <span class="group-hover:font-medium">{{ items?.posts.meta?.Comments || 0 }}</span>
+                    <span class="group-hover:font-medium">{{ useCompact(items?.posts.meta?.Comments || 0) }}</span>
                 </div>
             </div>
             <button @click="openCreatePostModal" class="text-[#376A7A]">

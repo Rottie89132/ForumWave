@@ -11,10 +11,10 @@
 							class="border-[#376A7A] border text-[#376A7A] p-2 w-fit rounded-xl flex items-center justify-center">
 							<icon name="bx:loader-circle" size="1.4em" :class="loading ? ' animate-spin' : ''"></icon>
 						</button>
-						<button
+						<span
 							class="border-[#376A7A] text-sm w-16 border text-[#376A7A] p-[0.56rem] rounded-xl flex items-center justify-center">
 							{{ Pages }}
-						</button>
+						</span>
 						<button @click="$router.back()"
 							class="bg-[#376A7A] border-[#376A7A] border text-[#ffffff] p-2 w-fit rounded-xl flex items-center justify-center">
 							<icon name="bx:arrow-back" size="1.4em" class=""></icon>
@@ -30,68 +30,31 @@
 						<h1 class=" font-bold ">
 							Overzicht van {{ user.user.Username || "Onbekent" }}
 						</h1>
-						<p v-if="items.length < 1" class=" opacity-60 font-semibold ">
-							Er zijn nog geen posts beschikbaar
-						</p>
 					</div>
-					<div v-bind="containerProps" class="h-[71.6vh] md:h-[75.5vh] overflow-scroll w-full">
+					<div class="grid grid-cols-2 mb-3 border rounded-lg  overflow-hidden bg-gray-100 cursor-pointer">
+						<div class="flex justify-center items-center py-2"
+							:class="activeTab === 'Posts' ? 'bg-[#376A7A] text-white rounded-lg' : 'bg-gray-100'"
+							@click="setActiveTab('Posts')">
+							<span class="text-sm">Posts</span>
+						</div>
+						<div class="flex justify-center items-center py-2"
+							:class="activeTab === 'Comments' ? 'bg-[#376A7A] text-white rounded-lg' : 'bg-gray-100'"
+							@click="setActiveTab('Comments')">
+							<span class="text-sm">Comments</span>
+						</div>
+					</div>
+					<div v-if="items.length > 0" v-bind="containerProps"
+						class="h-[62vh] md:h-[65.5vh] overflow-scroll w-full">
 						<div v-bind="wrapperProps" class="flex flex-col gap-3 snap-y snap-proximity scroll-smooth">
-							<div class="bg-gray-50 h-[142px] p-3 overflow-hidden rounded-md border"
-								v-for="posts in list" :key="posts.index">
-								<div>
-									<div class="flex items-center gap-1">
-										<h1 class="text-[0.9rem] text-[#376A7A] font-semibold opacity-60">
-											{{ user.user.Username || "Onbekent" }}
-										</h1>
-										<span class="opacity-60"> | </span>
-										<h1 class="text-[0.9rem] opacity-60">{{ useTimeAgo(posts?.data?.CreatedAt).value
-											}}</h1>
-									</div>
-								</div>
-
-								<h1 class="text-lg font-bold truncate">{{ posts?.data.title }}</h1>
-								<p class="text-sm line-clamp-1 text-balance">{{ posts?.data.content || `We wouden de
-									inhoud laten zien, maar deze was er helaas niet!` }}</p>
-								<hr class="-mb-1 mt-2" />
-								<div class="mt-3 text-[0.95rem] items-center flex gap-1 justify-between">
-									<button @click="navigateTo(`/posts/${posts?.data.id}`)"
-										class="bg-[#376A7A] text-[#ffffff] p-1 px-4 w-fit rounded-md flex items-center justify-center">
-										<span class="mr-1">Lees meer</span>
-									</button>
-									<div class="cursor-default items-center flex gap-1">
-										<div
-											class="flex gap-1 items-center group opacity-60 hover:opacity-100 transition-all duration-150">
-											<Icon v-if="posts?.data?.liked" name="solar:heart-bold" size="1em"
-												class="text-cyan-500 scale-150 transition-all duration-150"> </Icon>
-											<Icon v-else name="solar:heart-bold" size="1em"
-												class="group-hover:text-cyan-500 group-hover:scale-150 group-hover:mr-[0.25rem] transition-all duration-150">
-											</Icon>
-											<span class="group-hover:font-medium"> {{ posts?.data?.meta?.Likes || 0
-												}}</span>
-										</div>
-										<span class="opacity-60"> | </span>
-										<div
-											class="flex gap-1 items-center group opacity-60 hover:opacity-100 transition-all duration-150">
-											<Icon name="solar:eye-bold" size="1em"
-												class="group-hover:scale-150 group-hover:mr-[0.25rem] transition-all duration-150">
-											</Icon>
-											<span class="group-hover:font-medium">{{ posts?.data?.meta?.views || 0
-												}}</span>
-										</div>
-										<span class="opacity-60"> | </span>
-										<div
-											class="flex gap-1 items-center group opacity-60 hover:opacity-100 transition-all duration-150">
-											<Icon name="solar:chat-round-dots-bold" size="1em"
-												class="group-hover:scale-150 group-hover:mr-[0.25rem] transition-all duration-150">
-											</Icon>
-											<span class="group-hover:font-medium">{{ posts?.data?.meta?.Comments || 0
-												}}</span>
-										</div>
-									</div>
-								</div>
+							<div class="bg-gray-50 p-3 h-[95px] overflow-hidden rounded-md border" v-for="posts in list" :key="posts.index">
+								<PostsCreated v-if="activeTab === 'Posts'" :posts />
+								<PostsCreatedComments v-else :posts />
 							</div>
 						</div>
 					</div>
+					<p v-if="items.length < 1" class=" opacity-60 font-semibold ">
+						Er zijn nog geen {{ activeTab.toLocaleLowerCase() }} beschikbaar
+					</p>
 				</div>
 			</div>
 		</div>
@@ -99,6 +62,7 @@
 </template>
 
 <script setup>
+
 	definePageMeta({
 		middleware: "auth",
 	});
@@ -108,25 +72,74 @@
 	const Pages = ref(1);
 	const TotalPages = ref(0);
 	const loading = ref(false);
+	const activeTab = ref(useRoute().query.tab || "Posts");
 
 	const { data: user, error: userError } = await useFetch(`/api/users/${userId}`);
-	const { data, error } = await useFetch(`/api/posts?SearchId=${userId}`);
-	items.value = data.value?.posts;
-	TotalPages.value = data.value?.totalPages;
+
+	if (activeTab.value == "Comments") {
+		const { data, error } = await useFetch(`/api/users/comments?SearchId=${userId}`);
+		items.value = data.value?.comments;
+		TotalPages.value = data.value?.totalPages;
+	} else {
+		const { data, error } = await useFetch(`/api/users/posts?SearchId=${userId}`);
+		items.value = data.value?.posts;
+		TotalPages.value = data.value?.totalPages;
+	}
+
+	const setActiveTab = async (tab) => {
+		loading.value = true;
+		const itemData = ref()
+		const itemTotalPages = ref()
+		const itemsStatus = ref()
+
+		if(tab == "Comments") {
+			const { data, status } = await useFetch(`/api/users/comments?page=1&SearchId=${userId}&reload=true`);
+			itemData.value = data.value?.comments;
+			itemTotalPages.value = data.value?.totalPages;
+			itemsStatus.value = status.value;
+		} else {
+			const { data, status } = await useFetch(`/api/users/posts?page=1&SearchId=${userId}&reload=true`);
+			itemData.value = data.value?.posts;
+			itemTotalPages.value = data.value?.totalPages;
+			itemsStatus.value = status.value;
+		}
+
+		loading.value = itemsStatus.value != "success";
+		activeTab.value = tab;
+
+		items.value = itemData.value
+		TotalPages.value = itemTotalPages.value
+		Pages.value = 1;
+		navigateTo(`/user/${userId}?tab=${tab}`);
+
+	};
 
 	const refresh = async () => {
 		loading.value = true;
-		const { data, error, status } = await useFetch(`/api/posts?SearchId=${userId}&reload=true`);
+		const itemData = ref()
+		const itemTotalPages = ref()
+		const itemsStatus = ref()
 
-		loading.value = status.value != "success";
+		if (activeTab.value == "Comments") {
+			const { data, status } = await useFetch(`/api/users/comments?page=1&SearchId=${userId}&reload=true`);
+			itemData.value = data.value?.comments;
+			itemTotalPages.value = data.value?.totalPages;
+			itemsStatus.value = status.value;
+		} else {
+			const { data, status } = await useFetch(`/api/users/posts?page=1&SearchId=${userId}&reload=true`);
+			itemData.value = data.value?.posts;
+			itemTotalPages.value = data.value?.totalPages;
+			itemsStatus.value = status.value;
+		}
 
-		items.value = data.value?.posts;
-		TotalPages.value = data.value?.totalPages;
+		loading.value = itemsStatus.value != "success";
+		items.value = itemData.value
+		TotalPages.value = itemTotalPages.value
 		Pages.value = 1;
 	};
 
 	const { list, containerProps, wrapperProps } = useVirtualList(items, {
-		itemHeight: 152,
+		itemHeight: 105
 	});
 
 	useInfiniteScroll(
@@ -136,14 +149,26 @@
 			loading.value = true;
 
 			Pages.value += 1;
-			const Post = await $fetch(`/api/posts?page=${Pages.value}&SearchId=${userId}`);
 
-			setTimeout(() => {
-				loading.value = false;
-			}, 500);
+			if (activeTab.value == "Comments") {
+				const data = await $fetch(`/api/users/comments?page=${Pages.value}&SearchId=${userId}`);
+				
+				setTimeout(() => {
+					loading.value = false;
+				}, 500);
 
-			items.value.push(...Post.posts);
-			TotalPages.value = Post.totalPages;
+				items.value.push(...data.comments);
+				TotalPages.value = data.totalPages;
+			} else {
+				const data = await $fetch(`/api/users/posts?page=${Pages.value}&SearchId=${userId}`);
+				
+				setTimeout(() => {
+					loading.value = false;
+				}, 500);
+				
+				items.value.push(...data.posts);
+				TotalPages.value = data.totalPages;
+			}
 		},
 		{
 			distance: 12,

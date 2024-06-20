@@ -34,6 +34,7 @@ export default defineEventHandler(async (event) => {
     })
 
     await Posts.findByIdAndDelete(query)
+    await Reacties.deleteMany({ ParentId: query })
     await User.find({ Likes: query, Vists: query }).updateMany({ $pull: { Likes: query, Vists: query } })
     
     return {

@@ -2,11 +2,10 @@
 export default defineEventHandler((event) => {
     return new Promise((resolve, reject) => {
 
-        const popular = getQuery(event).popular || false;
         const Reload = getQuery(event).reload || false
         const query: any = getQuery(event).page || 1;
 
-        setTimeout( async() => {
+        setTimeout(async () => {
             const SessionId: any = getCookie(event, "access-token")
             const user: Record<string, any> | null = await useStorage("Sessions").getItem(SessionId)
 
@@ -16,25 +15,16 @@ export default defineEventHandler((event) => {
                 message: "The request has not been applied because it lacks valid authentication credentials for the target resource."
             })
 
-            const hoursAgo = 6;
-            const thresholdDate = new Date();
-            thresholdDate.setHours(thresholdDate.getHours() - hoursAgo);
-
-            const daysAgo = 14; 
-            const thresholdWeeksDate = new Date();
-            thresholdWeeksDate.setDate(thresholdWeeksDate.getDate() - daysAgo);
-
+            const { title } = await readBody(event);
             const currentPage = parseInt(query);
             const itemsPerPage = 5;
             const skip = (currentPage - 1) * itemsPerPage;
-            let posts: any = [];
-        
-            const totalItems = popular ? await Posts.countDocuments({ "CreatedAt": { $lt: thresholdDate } }) : await Posts.countDocuments({ "CreatedAt": { $gt: thresholdDate } });
-            if (popular) posts = await Posts.find({ "CreatedAt": { $gt: thresholdWeeksDate, $lt: thresholdDate } }).sort({ "meta.points": -1, CreatedAt: -1 }).skip(skip).limit(itemsPerPage);
-            else posts = await Posts.find({ "CreatedAt": { $gt: thresholdDate } }).sort({ CreatedAt: -1 }).skip(skip).limit(itemsPerPage);
 
-            const transformedData = await transformPosts(posts, user.Id);
-
+            const totalItems = await Posts.countDocuments({ "Content.content.content.text": { $regex: title, $options: 'i' } });
+            const data = await Posts.find({ "Content.content.content.text": { $regex: title, $options: 'i' } }).sort({ "meta.points": -1, CreatedAt: -1 }).skip(skip).limit(itemsPerPage);
+            
+            const transformedData = await transformPosts(data, user.Id);
+            
             return resolve({
                 statusCode: 200,
                 statusMessage: "OK",

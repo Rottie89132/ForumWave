@@ -6,16 +6,11 @@
 					Hallo <NuxtLink to="/user/me" class="font-black text-[#376A7A]">{{ User.user.Name }}</NuxtLink>
 				</h1>
 				<div class="flex items-center gap-2">
-					<button @click="openCreatePostModal"
-						class="border-[#376A7A] bg-[#376A7A] border text-white font-medium p-2 w-fit rounded-xl flex items-center justify-center">
-						<icon name="bx:plus-circle" size="1.4em" class=""></icon>
-					</button>
+					<PostsCreateButton v-model="status" />
 					<button @click="refresh"
 						class="border-[#376A7A] border text-[#376A7A] font-medium p-2 w-fit rounded-xl flex items-center justify-center">
 						<icon name="bx:loader-circle" size="1.4em" :class="loading ? ' animate-spin' : ''"></icon>
 					</button>
-					<button @click="logout"
-						class="border-[#376A7A] border text-[#376A7A] font-medium p-2 px-5 w-fit rounded-xl flex items-center justify-center">Uitlogen</button>
 				</div>
 			</div>
 
@@ -25,7 +20,7 @@
 
 			<div class="mt-4 pr-5">
 				<Form @submit="handleSearch" class="flex items-center gap-2">
-					<input v-model="searchParams" placeholder="Zoeken" class="btn-Input" ref="zoeken" type="text"
+					<input v-model="searchParams" placeholder="Zoeken naar posts" class="btn-Input" ref="zoeken" type="text"
 						aria-label="zoeken" autocomplete="current-zoeken" />
 
 					<button class="bg-[#376A7A] text-[#ffffff] p-2 w-fit rounded-xl flex items-center justify-center">
@@ -69,16 +64,7 @@
 				</div>
 			</div>
 		</div>
-		<TipTapModal v-model="status">
-			<p class="mb-3">Hier kan je een nieuwe post aanmaken</p>
-			<hr class="hidden md:block my-2" />
-			<TipTapEditor v-model="status" :loading :content :submit />
-			<div v-if="status?.error" class="flex justify-start gap-2 mt-2">
-				<p class="text-red-600 text-sm">
-					{{ status.error }}
-				</p>
-			</div>
-		</TipTapModal>
+		<PostsCreateView v-model="status" />
 	</div>
 </template>
 
@@ -109,10 +95,13 @@
 	const itemsTotalPages = ref(0);
 	const itemsPages = ref(1);
 
-	const status = ref({});
 	const loading = ref(false);
-	const content = ref("");
-
+	const status = ref({
+		status: false,
+		type: "Post",
+		error: undefined,
+	});
+	
 	const { data: User } = await useFetch("/api/users/me");
 	const { data: popularPosts } = await useFetch("/api/posts?popular=true");
 	const { data: Post } = await useFetch("/api/posts");
@@ -123,59 +112,11 @@
 	popularItems.value = popularPosts.value?.posts;
 	popularTotalPages.value = popularPosts.value?.totalPages;
 
-	const openCreatePostModal = () => {
-		status.value = {
-			status: true,
-			type: "Post",
-		};
-	};
-
 	const handleSearch = async () => {
-		console.log("searching");
-		console.log(searchParams.value);
-	};
 
-	const logout = async () => {
-		const { data, error } = await useFetch("/api/users/logout", {
-			method: "delete",
-		});
-		if (!error.value) {
-			navigateTo("/screen");
-		}
-	};
-
-	const submit = async (callback) => {
-		loading.value = true;
-		const result = callback();
-
-		status.value.error = undefined;
-
-		const { data, error } = await useFetch("/api/posts", {
-			method: "POST",
-			body: result,
-		});
-
-		loading.value = false;
-		if (!error.value) {
-			const { data: popularPosts } = await useFetch("/api/posts?popular=true");
-			const { data: Post } = await useFetch("/api/posts");
-
-			items.value = Post.value?.posts;
-			itemsTotalPages.value = Post.value?.totalPages;
-
-			popularItems.value = popularPosts.value?.posts;
-			popularTotalPages.value = popularPosts.value?.totalPages;
-
-			setTimeout(() => {
-				status.value = false;
-			}, 1000);
-		} else {
-			status.value = {
-				status: true,
-				type: "Post",
-				error: error.value.data.message,
-			};
-		}
+		if(searchParams.value == "") return;
+		navigateTo(`/search/${searchParams.value}`);
+	
 	};
 
 	const refresh = async () => {

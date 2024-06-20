@@ -10,10 +10,16 @@ export default defineEventHandler(async (event) => {
         message: "The request has not been applied because it lacks valid authentication credentials for the target resource."
     }
 
+
+    const posts = await Posts.find({ UserId: user.Id }).countDocuments()
+    const comments = await Reacties.find({ UserId: user.Id }).countDocuments()
+   
     return {
         statusCode: 200,
         statusMessage: "OK",
         message: "The request has succeeded.",
         user: user,
+        comments,
+        posts,
     }
 })
