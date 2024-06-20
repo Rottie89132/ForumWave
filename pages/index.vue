@@ -6,11 +6,12 @@
 					Hallo <NuxtLink to="/user/me" class="font-black text-[#376A7A]">{{ User.user.Name }}</NuxtLink>
 				</h1>
 				<div class="flex items-center gap-2">
-					<PostsCreateButton v-model="status" />
+
 					<button @click="refresh"
 						class="border-[#376A7A] border text-[#376A7A] font-medium p-2 w-fit rounded-xl flex items-center justify-center">
 						<icon name="bx:loader-circle" size="1.4em" :class="loading ? ' animate-spin' : ''"></icon>
 					</button>
+					<PostsCreateButton v-model="status" />
 				</div>
 			</div>
 
@@ -20,8 +21,8 @@
 
 			<div class="mt-4 pr-5">
 				<Form @submit="handleSearch" class="flex items-center gap-2">
-					<input v-model="searchParams" placeholder="Zoeken naar posts" class="btn-Input" ref="zoeken" type="text"
-						aria-label="zoeken" autocomplete="current-zoeken" />
+					<input v-model="searchParams" placeholder="Zoeken naar posts" class="btn-Input" ref="zoeken"
+						type="text" aria-label="zoeken" autocomplete="current-zoeken" />
 
 					<button class="bg-[#376A7A] text-[#ffffff] p-2 w-fit rounded-xl flex items-center justify-center">
 						<icon name="bx:arrow-back" size="1.6em" class="text-white rotate-180"></icon>

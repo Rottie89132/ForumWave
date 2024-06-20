@@ -23,11 +23,12 @@
 			<div class="mt-2 z-20">
 				<PostsDetails 
 					:items 
+					:disabled 
 					:openEditPostModal 
 					:OpenDeletePostModal 
 					:UseMakeHtml 
-					:openCreatePostModal 
-					:addLike
+					:openCreatePostModal
+					:addLike 
 					:unlike 
 				/>
 			</div>
@@ -48,7 +49,7 @@
 						:UseMakeHtml 
 						:upVoteComment
 						:downVoteComment 
-					/>
+						/>
 				</div>
 			</div>
 		</div>
@@ -110,6 +111,7 @@
 	const comments = ref([]);
 	const isComment = ref(false);
 	const CommentId = ref(null);
+	const disabled = ref(false);
 
 	const { data: Post } = await useFetch(`/api/posts/${id}`);
 	items.value = Post.value
@@ -218,7 +220,8 @@
 	};
 
 	const addLike = async () => {
-		const { data, error } = await useFetch(`/api/posts/${id}/likes`, {
+		disabled.value = true;
+		const { data, error, status } = await useFetch(`/api/posts/${id}/likes`, {
 			method: "POST",
 		});
 
@@ -226,10 +229,13 @@
 			const { data: Post } = await useFetch(`/api/posts/${id}`);
 			items.value = Post.value
 		}
+
+		disabled.value = status.value != "success";
 	};
 
 	const unlike = async () => {
-		const { data, error } = await useFetch(`/api/posts/${id}/likes`, {
+		disabled.value = true;
+		const { data, error, status } = await useFetch(`/api/posts/${id}/likes`, {
 			method: "DELETE",
 		});
 
@@ -237,6 +243,8 @@
 			const { data: Post } = await useFetch(`/api/posts/${id}`);
 			items.value = Post.value
 		}
+
+		disabled.value = status.value != "success";
 	};
 
 	const openCreatePostModal = () => {

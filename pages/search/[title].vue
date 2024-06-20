@@ -1,7 +1,26 @@
 <template>
     <div>
         <div class="sm:px-28 md:px-30 lg:px-52 xl:px-80 pl-5 py-3 fixed w-full h-full">
-            <div class="flex items-center justify-between gap-4 pr-5">
+            <div class="bg-white sticky z-50 -top-4 py-3 pr-5">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4 pr-5">
+                        <NuxtLink to="/" class="text-lg font-bold">Home</NuxtLink>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button @click="refresh"
+                            class="border-[#376A7A] border text-[#376A7A] p-2 w-fit rounded-xl flex items-center justify-center">
+                            <icon name="bx:loader-circle" size="1.4em" :class="loading ? ' animate-spin' : ''"> </icon>
+                        </button>
+                        <PostsCreateButton v-model="status" />
+                        <button @click="$router.back()"
+                            class="bg-[#376A7A] border-[#376A7A] border text-[#ffffff] p-2 w-fit rounded-xl flex items-center justify-center">
+                            <icon name="bx:arrow-back" size="1.4em" class="text-white"></icon>
+                        </button>
+                    </div>
+                </div>
+                <hr class="w-full mt-2 -mb-1" />
+            </div>
+            <!-- <div class="flex items-center justify-between gap-4 pr-5">
                 <h1 class="text-lg font-bold">
                     Hallo <NuxtLink to="/user/me" class="font-black text-[#376A7A]">{{ User.user.Name }}</NuxtLink>
                 </h1>
@@ -16,7 +35,7 @@
                         <icon name="bx:arrow-back" size="1.4em" class="text-white"></icon>
                     </button>
                 </div>
-            </div>
+            </div> -->
 
             <div class="mt-4">
                 <h1 class="text-4xl font-bold">ForumWave</h1>

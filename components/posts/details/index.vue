@@ -7,13 +7,13 @@
                     class="text-gray-400 bg-white -mb-9 border-gray-300 border p-1 rounded-md"></icon>
                 <div class="group-hover:block hidden absolute mt-10 transition-all duration-200">
                     <div class="flex text-sm shadow-md flex-col justify-start items-start rounded-md">
-                        <button @click="openEditPostModal(false)"
+                        <button @click="openEditPostModal(false)" :disabled
                             class="text-[#376A7A] w-full hover:bg-slate-100 bg-white border rounded-t-md p-1 px-2 flex items-center gap-2">
                             <icon name="bx:bxs-pencil" size="1.2em" class=""></icon>
                             <span>|</span>
                             <span>Bewerken</span>
                         </button>
-                        <button @click="OpenDeletePostModal(false, items.posts._id)"
+                        <button @click="OpenDeletePostModal(false, items.posts._id)" :disabled
                             class="text-[#376A7A] hover:bg-slate-100 bg-white border rounded-b-md p-1 px-2 flex items-center gap-2">
                             <icon name="bx:trash" size="1.2em" class=""> </icon>
                             <span>|</span>
@@ -39,12 +39,16 @@
         <div class="flex select-none gap-1 items-center justify-between">
             <div class="cursor-default text-[0.9rem] flex gap-1">
                 <div class="flex gap-1 items-center group transition-all duration-150">
-                    <Icon v-if="items.liked" @click="unlike" name="solar:heart-bold" size="1em"
-                        class="group-hover:text-cyan-700 text-cyan-500 group-hover:scale-100 scale-150 group-hover:mr-[0rem] mr-[0.25rem] transition-all duration-150">
-                    </Icon>
-                    <Icon v-else-if="!items.owned" @click="addLike" name="solar:heart-bold" size="1em"
-                        class="group-hover:text-cyan-500 group-hover:scale-150 group-hover:mr-[0.25rem] transition-all duration-150">
-                    </Icon>
+                    <button v-if="items.liked" @click="unlike" :disabled>
+                        <Icon name="solar:heart-bold" size="1em"
+                            class="group-hover:text-cyan-700 text-cyan-500 group-hover:scale-100 scale-150 group-hover:mr-[0rem] mr-[0.25rem] transition-all duration-150">
+                        </Icon>
+                    </button>
+                    <button v-else-if="!items.owned" @click="addLike" :disabled>
+                        <Icon name="solar:heart-bold" size="1em"
+                            class="group-hover:text-cyan-500 group-hover:scale-150 group-hover:mr-[0.25rem] transition-all duration-150">
+                        </Icon>
+                    </button>
                     <Icon v-else name="solar:heart-bold" size="1em"
                         class="group-hover:text-cyan-500 group-hover:scale-150 group-hover:mr-[0.25rem] transition-all duration-150">
                     </Icon>
@@ -74,6 +78,7 @@
 
     defineProps<{
         items: any
+        disabled: boolean,
         openEditPostModal: (value: boolean) => void,
         OpenDeletePostModal: (value: boolean, id: string) => void,
         UseMakeHtml: (data: any) => string,
