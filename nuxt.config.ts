@@ -12,6 +12,10 @@ export default defineNuxtConfig({
     "nuxt-tiptap-editor",
     "@nuxtjs/supabase"
   ],
+  image: {
+    provider: 'netlify',
+    domains: [ `${process.env.IMAGE_DOMAIN}`],
+  },
   supabase: {
     redirectOptions: {
       login: '/screen',
