@@ -6,11 +6,9 @@
 			<div class="p-2 bg-black bg-opacity-50 text-white flex items-end rounded-md w-full h-full">
 				<div class="flex gap-4 flex-col justify-end pb-2">
 					<div class="">
-						<p class="opacity-70 text-sm">{{ item.data?.author }}
-							<span class="opacity-90"> | </span>
-							<span class="opacity-90 text-xs">{{ useTimeAgo(item?.data.CreatedAt).value }}</span>
-						</p>
-						<h1 class=" font-black text-lg line-clamp-2">{{ item.data?.title }}</h1>
+						<p class="opacity-80 text-sm">{{ item.data?.author }}</p>
+						<p class="opacity-60 text-xs truncate">{{ useTimeAgo(item?.data.CreatedAt).value }}</p>
+						<h1 class=" font-black text-lg line-clamp-2 leading-5 my-1">{{ item.data?.title }}</h1>
 						<p class=" opacity-85 text-xs line-clamp-2">
 							{{ item.data?.content}}
 						</p>

@@ -24,7 +24,8 @@
                             </button>
                             <button @click="OpenDeletePostModal(true, comment._id)"
                                 class="text-[#376A7A] hover:bg-slate-100 bg-white border rounded-b-md p-1 px-2 flex items-center gap-2">
-                                <icon name="bx:trash" size="1.2em" class=""> </icon>
+                                <icon v-if="!loading" name="bx:trash" size="1.2em" class=""> </icon>
+                                <icon v-else name="bx:loader-circle" size="1.2em" class=" animate-spin"> </icon>
                                 <span>|</span>
                                 <span>Verwijderen</span>
                             </button>
@@ -52,6 +53,7 @@
     
     defineProps<{
         comment: any;
+        loading: boolean;
         openEditPostModal: (Boolean: boolean, html?: string, id?: string) => void;
         OpenDeletePostModal: (value: boolean, id: string) => void;
         UseMakeHtml: (data: any) => string;

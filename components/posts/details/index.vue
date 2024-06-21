@@ -15,7 +15,8 @@
                         </button>
                         <button @click="OpenDeletePostModal(false, items.posts._id)" :disabled
                             class="text-[#376A7A] hover:bg-slate-100 bg-white border rounded-b-md p-1 px-2 flex items-center gap-2">
-                            <icon name="bx:trash" size="1.2em" class=""> </icon>
+                            <icon v-if="!loading" name="bx:trash" size="1.2em" class=""> </icon>
+                            <icon v-else name="bx:loader-circle" size="1.2em" class=" animate-spin"> </icon>
                             <span>|</span>
                             <span>Verwijderen</span>
                         </button>
@@ -27,8 +28,7 @@
             <div class="flex items-center gap-1">
                 <NuxtLink :to="`/user/${items.posts.UserId}`">
                     <h1 class="text-[0.9rem] underline text-[#376A7A] font-semibold opacity-60">{{ items.Author ||
-                        "Onbekent"
-                        }}</h1>
+                        "Onbekent" }}</h1>
                 </NuxtLink>
                 <span class="opacity-60"> | </span>
                 <h1 class="text-[0.9rem] opacity-60">{{ useTimeAgo(items?.posts.CreatedAt).value }}</h1>
@@ -75,17 +75,15 @@
 </template>
 
 <script setup lang="ts">
-
-    defineProps<{
-        items: any
-        disabled: boolean,
-        openEditPostModal: (value: boolean) => void,
-        OpenDeletePostModal: (value: boolean, id: string) => void,
-        UseMakeHtml: (data: any) => string,
-        unlike: () => void,
-        addLike: () => void,
-        openCreatePostModal: () => void,
-        
-    }>();
-
+	defineProps<{
+		items: any;
+        loading: boolean;
+		disabled: boolean;
+		openEditPostModal: (value: boolean) => void;
+		OpenDeletePostModal: (value: boolean, id: string) => void;
+		UseMakeHtml: (data: any) => string;
+		unlike: () => void;
+		addLike: () => void;
+		openCreatePostModal: () => void;
+	}>();
 </script>

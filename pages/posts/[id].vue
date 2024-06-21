@@ -22,12 +22,13 @@
 
 			<div class="mt-2 z-20">
 				<PostsDetails 
+					:loading 
 					:items 
 					:disabled 
 					:openEditPostModal 
 					:OpenDeletePostModal 
-					:UseMakeHtml 
-					:openCreatePostModal
+					:UseMakeHtml
+					:openCreatePostModal 
 					:addLike 
 					:unlike 
 				/>
@@ -43,13 +44,14 @@
 						<p class="text-gray-400">Er zijn nog geen reacties beschikbaar</p>
 					</div>
 					<PostsComments v-else 
+						:loading 
 						:comments 
 						:openEditPostModal 
 						:OpenDeletePostModal 
-						:UseMakeHtml 
-						:upVoteComment
+						:UseMakeHtml
+						:upVoteComment 
 						:downVoteComment 
-						/>
+					/>
 				</div>
 			</div>
 		</div>
@@ -158,8 +160,8 @@
 			const { data: Post } = await useFetch(`/api/posts/${id}`);
 			items.value = Post.value
 			comments.value = Post.value?.Comments;
-		}  
-		
+		}
+
 	};
 
 	const downVoteComment = async (MessageId) => {
@@ -173,7 +175,7 @@
 			items.value = Post.value
 			comments.value = Post.value?.Comments;
 		}
-		
+
 	};
 
 	const refresh = async () => {
@@ -197,22 +199,25 @@
 	};
 
 	const OpenDeletePostModal = async (Comment, MessageId) => {
+		loading.value = true;
 		if (Comment) {
 			CommentId.value = MessageId;
-			const { data, error } = await useFetch(`/api/posts/${id}/comments/${MessageId}`, {
+			const { error, status } = await useFetch(`/api/posts/${id}/comments/${MessageId}`, {
 				method: "DELETE",
 			});
 
+			loading.value = status.value != "success";
 			if (!error.value) {
 				const { data: Post } = await useFetch(`/api/posts/${id}`);
 				items.value = Post.value
 				comments.value = Post.value?.Comments;
 			}
 		} else {
-			const { data, error } = await useFetch(`/api/posts/${MessageId}`, {
+			const { error, status } = await useFetch(`/api/posts/${MessageId}`, {
 				method: "DELETE",
 			});
 
+			loading.value = status.value != "success";
 			if (!error.value) {
 				navigateTo("/");
 			}
