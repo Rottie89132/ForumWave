@@ -1,3 +1,5 @@
+
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: false },
@@ -87,6 +89,12 @@ export default defineNuxtConfig({
     }
   },
   nitro: {
+    storage: {
+      Sessions:{
+        driver: "fs",
+        base: "./server/storage",
+      },
+    },
     imports: {
       dirs: ["./server/utils"],
       presets: [{
