@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
 		setTimeout(async () => {
 			const client = serverSupabaseServiceRole(event)
 			const SessionId: Record<string, any> | any = getCookie(event, "access-token")
-			const user: Record<string, any> | null = await useStorage("Sessions").getItem(SessionId)
+			const user: Record<string, any> | null = await useVercelStorage().getItem(SessionId)
 
 			if (!user) return reject({
 				statusCode: 401,

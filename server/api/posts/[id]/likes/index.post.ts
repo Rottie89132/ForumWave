@@ -2,7 +2,7 @@
 export default defineEventHandler(async (event) => {
     return new Promise(async (resolve, reject) => {
         const SessionId: any = getCookie(event, "access-token")
-        const user: Record<string, any> | null = await useStorage("Sessions").getItem(SessionId)
+        const user: Record<string, any> | null = await useVercelStorage().getItem(SessionId)
 
         if (!user) return reject({
             statusCode: 401,

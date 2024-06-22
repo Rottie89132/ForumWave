@@ -1,3 +1,4 @@
+import { version } from "vue";
 import * as zod from "zod";
 
 export default defineEventHandler((event) => {
@@ -54,16 +55,17 @@ export default defineEventHandler((event) => {
                 });
 
             const SessionId = crypto.randomUUID()
-            await useStorage("Sessions").setItem(SessionId, {
+            await useVercelStorage().setItem(SessionId, {
                 Id: user._id,
                 Email: user.Email,
                 Name: user.Username,
             })
 
             setTimeout(async () => {
-                await useStorage("Sessions").removeItem(SessionId);
+                await useVercelStorage().removeItem(SessionId);
             }, 24 * 60 * 60 * 1000);
 
+            
             setCookie(event, "access-token", SessionId, {
                 httpOnly: false, sameSite: false, maxAge: 24 * 60 * 60 * 1000
             });
