@@ -74,7 +74,6 @@ export default defineNuxtConfig({
     },
   },
   app: {
-    //pageTransition: { name: 'page', mode: 'out-in' },
     head: {
       meta: [
         { name: 'theme-color', media: '(prefers-color-scheme: light)', content: "#FFFFFF" },
