@@ -61,7 +61,7 @@ const transformPosts = async (data: any[], userId: any): Promise<any[]> => {
 
         const paragraphItem = itemdata.find((item: any) => item.type === 'paragraph');
         const content = paragraphItem && paragraphItem.content && paragraphItem.content.length > 0 ? paragraphItem.content[0].text : '';
-        const media = itemdata.find((item: any) => item.type === 'image')?.attrs.src || null;
+        const media = itemdata.find((item: any) => item.type === 'image' )?.attrs.src || null;
 
         return {
             id: item.id,

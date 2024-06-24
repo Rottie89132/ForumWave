@@ -8,22 +8,22 @@
 					<div class="">
 						<p class="opacity-80 text-sm">{{ item.data?.author }}</p>
 						<p class="opacity-60 text-xs truncate">{{ useTimeAgo(item?.data.CreatedAt).value }}</p>
-						<h1 class=" font-black text-lg line-clamp-2 leading-5 my-1">{{ item.data?.title }}</h1>
-						<p class=" opacity-85 text-xs line-clamp-2">
-							{{ item.data?.content}}
+						<h1 class="font-black text-lg line-clamp-2 leading-5 my-1">{{ item.data?.title }}</h1>
+						<p class="opacity-85 text-xs line-clamp-2">
+							{{ item.data?.content }}
 						</p>
 					</div>
 					<div class="cursor-default text-[0.8rem] flex gap-1 justify-end">
 						<div
 							class="flex gap-1 items-center group opacity-60 hover:opacity-100 transition-all duration-150">
-
 							<Icon v-if="item.data?.liked" name="solar:heart-bold" size="1em"
-								class=" text-cyan-500 scale-150 transition-all duration-150">
+								class="text-cyan-500 scale-150 transition-all duration-150">
 							</Icon>
 							<Icon v-else name="solar:heart-bold" size="1em"
 								class="group-hover:text-cyan-500 group-hover:scale-150 group-hover:mr-[0.25rem] transition-all duration-150">
 							</Icon>
-							<span class=" group-hover:font-medium"> {{ useCompact(item.data?.meta?.Likes || 0) }}</span>
+							<span class="group-hover:font-medium"> {{ useCompact(item.data?.meta?.Likes || 0)
+								}}</span>
 						</div>
 						<span class="opacity-60"> | </span>
 						<div
@@ -31,7 +31,8 @@
 							<Icon name="solar:eye-bold" size="1em"
 								class="group-hover:scale-150 group-hover:mr-[0.25rem] transition-all duration-150 ">
 							</Icon>
-							<span class=" group-hover:font-medium">{{ useCompact(item.data?.meta?.views || 0) }}</span>
+							<span class="group-hover:font-medium">{{ useCompact(item.data?.meta?.views || 0)
+								}}</span>
 						</div>
 						<span class="opacity-60"> | </span>
 						<div
@@ -39,7 +40,7 @@
 							<Icon name="solar:chat-round-dots-bold" size="1em"
 								class="group-hover:scale-150 group-hover:mr-[0.25rem] transition-all duration-150 ">
 							</Icon>
-							<span class=" group-hover:font-medium">{{ useCompact(item.data?.meta?.Comments || 0)
+							<span class="group-hover:font-medium">{{ useCompact(item.data?.meta?.Comments || 0)
 								}}</span>
 						</div>
 					</div>
@@ -53,6 +54,10 @@
 	defineProps({
 		item: Object,
 	});
+
+	const isVideo = (mediaUrl) => {
+		return mediaUrl && (mediaUrl.endsWith('.mp4') || mediaUrl.endsWith('.webm')); // Voeg meer videoformaten toe indien nodig
+	};
 </script>
 
 <style scoped>

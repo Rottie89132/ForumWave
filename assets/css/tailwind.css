@@ -95,11 +95,11 @@ input:-webkit-autofill:focus {
 
 
 .TipTapImage {
-    @apply w-full md:h-full md:max-h-[50vh] min-h-[20vh] max-h-[35vh] select-none rounded-md object-cover border border-gray-400;
+    @apply w-full md:h-full md:max-h-[50vh] min-h-[20vh] max-h-[38vh] select-none rounded-md object-cover border border-gray-400;
 }
 
 .TipTapVideo {
-    @apply w-full overflow-hidden md:h-full md:max-h-[60vh] min-h-[20vh] max-h-[35vh] select-none rounded-md object-cover border border-gray-400;;
+    @apply w-full overflow-hidden md:h-full md:max-h-[60vh] min-h-[20vh] max-h-[38vh] select-none rounded-md object-cover border border-gray-400;;
 }
 
 .tiptapEditorReactie {

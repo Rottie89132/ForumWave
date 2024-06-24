@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
 			const Error = validateContent(readableData.content);
 			if(Error) return reject(Error)
 
-			const allowedTypes = [".png", ".jpeg", ".jpg", ".gif", ".mp4"];
+			const allowedTypes = [".png", ".jpeg", ".jpg", ".gif", ".mp4", ".mov"];
 			const FilePaths: object[] = [];
 			for (const file of readableData.files) {
 				const ImageId = crypto.randomUUID();
@@ -61,7 +61,7 @@ export default defineEventHandler(async (event) => {
 				FilePaths.push({
 					title: file.filename,
 					src: src.data.publicUrl,
-					type: extension === ".mp4" ? "video" : "image",
+					type: extension === ".mp4" ? "video" : extension === ".mov" ? "video" : "image",
 				});
 			}
 
@@ -94,7 +94,7 @@ const updateMediaSources = (content: any, files: any) => {
 	content.content.forEach((item: any) => {
 		files.forEach((file: any) => {
 			if ((item.type === "image" || item.type === "video") && item.attrs.title === file.title) {
-				item.attrs.src = file.src;
+				item.attrs.src = file.src + (file.type === "video" ? "#t=0.1" : "")
 			}
 		});
 	});

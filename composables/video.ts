@@ -74,7 +74,7 @@ export default Node.create<VideoOptions>({
     },
 
     renderHTML({ HTMLAttributes }) {
-        return ['video', { ...HTMLAttributes, class: 'TipTapVideo TipTapMedia', playsinline: true, controls: true}]
+        return ['video', { ...HTMLAttributes, class: 'TipTapVideo TipTapMedia', autoplay: false,  playsinline: true, controls: true, preload: 'metadata' }]
     },
 
     addCommands() {
