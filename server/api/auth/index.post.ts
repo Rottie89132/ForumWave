@@ -61,11 +61,6 @@ export default defineEventHandler((event) => {
                 Name: user.Username,
             })
 
-            setTimeout(async () => {
-                await useVercelStorage().removeItem(SessionId);
-            }, 24 * 60 * 60 * 1000);
-
-            
             setCookie(event, "access-token", SessionId, {
                 httpOnly: false, sameSite: false, maxAge: 24 * 60 * 60 * 1000
             });
