@@ -96,6 +96,19 @@
 	definePageMeta({
 		middleware: "auth",
 	});
+	
+	useSeoMeta({
+		title: "ForumWave - Account",
+		description: "Account informatie van de gebruiker",
+		ogTitle: "ForumWave",
+		ogDescription: "Account informatie van de gebruiker",
+		ogImage: "/apple-touch-icon.png",
+		ogUrl: "/",
+		twitterTitle: "ForumWave",
+		twitterDescription: "Account informatie van de gebruiker",
+		twitterImage: "/apple-touch-icon.png",
+		twitterCard: "summary",
+	});
 
 	
 	const user = ref();

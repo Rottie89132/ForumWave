@@ -76,6 +76,12 @@
 		middleware: "auth",
 	});
 
+	useHead({
+		htmlAttrs: {
+			lang: "nl",
+		},
+	});
+
 	useSeoMeta({
 		title: "ForumWave - Home",
 		description: "Bekijk de nieuwste en populairste posts op ForumWave!",

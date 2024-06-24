@@ -67,6 +67,19 @@
 		middleware: "auth",
 	});
 
+	useSeoMeta({
+		title: "ForumWave - User",
+		description: "Overzicht van de gebruiker",
+		ogTitle: "ForumWave",
+		ogDescription: "Overzicht van de gebruiker",
+		ogImage: "/apple-touch-icon.png",
+		ogUrl: "/",
+		twitterTitle: "ForumWave",
+		twitterDescription: "Overzicht van de gebruiker",
+		twitterImage: "/apple-touch-icon.png",
+		twitterCard: "summary",
+	});
+
 	const userId = useRoute().params.id;
 	const items = ref([]);
 	const Pages = ref(1);
