@@ -14,22 +14,21 @@
 </template>
 
 <script setup>
-
     const status = defineModel()
     const loading = ref(false)
     const content = ref("");
-    
+
     const submit = async (callback) => {
         loading.value = true;
         const result = callback();
 
         status.value.error = undefined;
-
-        const { data, error } = await useFetch("/api/posts", {
+        const { data, error} = await useUploadFilesInChunks("/api/posts", {
             method: "POST",
-            body: result,
+            body: result
         });
 
+        
         loading.value = false;
         if (!error.value) {
             setTimeout(() => {
@@ -47,4 +46,6 @@
         }
     };
 
+    
 </script>
+

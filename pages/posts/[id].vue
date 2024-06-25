@@ -315,7 +315,7 @@
 		loading.value = true;
 		const result = callback();
 
-		const { data, error } = await useFetch(`/api/posts/${id}`, {
+		const { data, error } = await useUploadFilesInChunks(`/api/posts/${id}`, {
 			method: "Patch",
 			body: result,
 		});
@@ -335,4 +335,5 @@
 			};
 		}
 	};
+
 </script>

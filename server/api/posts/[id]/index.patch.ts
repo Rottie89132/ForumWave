@@ -1,3 +1,4 @@
+const streamMap: any[] = []
 import path from "path";
 import sharp from "sharp";
 import crypto from "crypto";
@@ -20,85 +21,148 @@ export default defineEventHandler(async (event) => {
 			const data = await readMultipartFormData(event);
 			const readableData = await useReadable(data);
 			const PostData: any = await Posts.findById(query);
+			const PostDataId = PostData.PostId;
 
-			const PostId = PostData.PostId;
-			
-			const Error = validateContent(readableData.content);
-			if(Error) return reject(Error)
+			streamMap.push(readableData)
+			const { uploadId, PostId, chunkIndex, totalChunks, totalCount, CountIndex, } = readableData;
 
-			const allowedTypes = [".png", ".jpeg", ".jpg", ".gif", ".mp4", ".mov"];
-			const FilePaths: object[] = [];
-			for (const file of readableData.files) {
-				const ImageId = crypto.randomUUID();
-				let extension = path.extname(file.filename).toLowerCase();
-				let buffer: Buffer | void
+			if (CountIndex == totalCount) {
+				if (chunkIndex == totalChunks) {
+					const { content: RawContent, files }: any = mergeDataByPostId(PostId, uploadId)
 
-				if (file.data.length > 4450000) return reject({
-					statusCode: 413,
-					statusMessage: "Payload Too Large",
-					message: "Fout bij het uploaden van bestand, het bestand is mogelijk te groot (max 4.45mb)."
-				})
+					const Error = validateContent(RawContent);
+					if (Error) return reject(Error)
 
-				if (!allowedTypes.includes(extension)) return reject({
-					statusCode: 415,
-					statusMessage: "Unsupported Media Type",
-					message: "The server is refusing to service the request because the payload is in a format not supported by this method on the target resource."
-				})
+					const allowedTypes = [".png", ".jpeg", ".jpg", ".gif", ".mp4", ".mov"];
+					const FilePaths: object[] = [];
 
-				if (extension === ".jpeg" || extension === ".jpg" || extension === ".png") {
-					buffer = await sharp(file.data).rotate().webp({ quality: 75 }).toBuffer().then(() => {
-						extension = ".webp"
+					cleanByPostId(PostId)
+
+					for (const file of files) {
+
+						const ImageId = crypto.randomUUID();
+						let extension = path.extname(file.filename).toLowerCase();
+						let buffer: Buffer | void
+
+						if (file.data.length > 50000000) return reject({
+							statusCode: 413,
+							statusMessage: "Payload Too Large",
+							message: "Fout bij het uploaden van bestand, het bestand is mogelijk te groot (max 4.45mb)."
+						})
+
+						if (!allowedTypes.includes(extension)) return reject({
+							statusCode: 415,
+							statusMessage: "Unsupported Media Type",
+							message: "The server is refusing to service the request because the payload is in a format not supported by this method on the target resource."
+						})
+
+						if (extension === ".jpeg" || extension === ".jpg" || extension === ".png") {
+							buffer = await sharp(file.data).rotate().webp({ quality: 35 }).toBuffer().then(() => {
+								extension = ".webp"
+							}).catch((err: Error) => {
+								console.error(err)
+								return reject({
+									statusCode: 500,
+									statusMessage: "Internal Server Error",
+									message: "Error converting image to WEBP",
+								})
+							});
+							extension = ".webp";
+						}
+
+						await client.storage.from('files').upload(`${PostDataId}/${ImageId}${extension}`, file.data, {
+							cacheControl: '3600',
+							contentType: extension === ".webp" ? "image/webp" : file.type,
+						}).catch((err: Error) => {
+							return reject({
+								statusCode: 500,
+								statusMessage: "Internal Server Error",
+								message: "Error uploading file to storage",
+							});
+						});
+
+						const src = client.storage.from('files').getPublicUrl(`${PostDataId}/${ImageId}${extension}`);
+						FilePaths.push({
+							title: file.filename,
+							src: src.data.publicUrl,
+							type: extension === ".mp4" ? "video" : extension === ".mov" ? "video" : "image",
+						});
+					}
+
+					const { content, error } = updateContentSrc(RawContent, FilePaths)
+					if (error) return reject(error)
+
+					await Posts.findByIdAndUpdate(query, {
+						Content: content
+					}).then(() => {
+						return resolve({
+							statusCode: 200,
+							statusMessage: "OK",
+							message: "Post created successfully",
+						});
 					}).catch((err: Error) => {
+						console.error(err);
 						return reject({
 							statusCode: 500,
 							statusMessage: "Internal Server Error",
-							message: "Error converting image to WEBP",
-						})
+							message: "Error saving post to database",
+						});
 					});
-					extension = ".webp";
 				}
-
-				await client.storage.from('files').upload(`${PostId}/${ImageId}${extension}`, file.data, {
-					cacheControl: '3600',
-					contentType: extension === ".webp" ? "image/webp" : file.type,
-				}).catch((err: Error) => {
-					return reject({
-						statusCode: 500,
-						statusMessage: "Internal Server Error",
-						message: "Error uploading file to storage",
-					});
-				});
-
-				const src = client.storage.from('files').getPublicUrl(`${PostId}/${ImageId}${extension}`);
-				FilePaths.push({
-					title: file.filename,
-					src: src.data.publicUrl,
-					type: extension === ".mp4" ? "video" : extension === ".mov" ? "video" : "image",
-				});
 			}
-
-			const { content, error } = updateContentSrc(readableData.content, FilePaths)
-			if (error) return reject(error)
-
-			await Posts.findByIdAndUpdate(query, {
-				Content: content
-			}).then(() => {
-				return resolve({
-					statusCode: 200,
-					statusMessage: "OK",
-					message: "Post created successfully",
-				});
-			}).catch((err: Error) => {
-				console.error(err);
-				return reject({
-					statusCode: 500,
-					statusMessage: "Internal Server Error",
-					message: "Error saving post to database",
-				});
+			return resolve({
+				statusCode: 200,
+				statusMessage: "OK",
+				message: "Chunk uploaded successfully",
 			});
-		}, 1000);
+		}, 50);
 	});
 });
+
+const mergeDataByPostId = (postId: string, uploadId: string) => {
+	const filteredStreams = streamMap.filter(stream => stream.PostId === postId);
+	const uniqueUploadIds = Array.from(new Set(filteredStreams.map(item => item.uploadId)));
+
+	const mergedData: any = {
+		content: {},
+		files: []
+	};
+
+	const mimeTypeMap: any = {
+		".png": "image/png",
+		".jpeg": "image/jpeg",
+		".jpg": "image/jpeg",
+		".gif": "image/gif",
+		".mp4": "video/mp4",
+		".mov": "video/quicktime"
+	};
+
+	uniqueUploadIds.forEach((uploadId) => {
+		const streams = filteredStreams.filter(stream => stream.uploadId === uploadId);
+		const sortedStreams = streams.sort((a, b) => parseInt(a.chunkIndex) - parseInt(b.chunkIndex));
+		sortedStreams.forEach((stream: any) => {
+			if (stream.content) mergedData.content = stream.content;
+			stream.files.forEach((file: any) => {
+				const extension: string = path.extname(file.filename).toLowerCase();
+				const existingFileIndex = mergedData.files.findIndex((f: any) => f.filename === file.filename);
+				if (existingFileIndex !== -1) {
+					const existingFile = mergedData.files[existingFileIndex];
+					existingFile.data = Buffer.concat([existingFile.data, file.data]);
+				} else {
+					file.type = mimeTypeMap[extension] || file.type
+					mergedData.files.push({ ...file, type: file.type });
+				}
+			});
+		});
+	});
+	return mergedData;
+};
+
+const cleanByPostId = (postId: string) => {
+	const filteredStreams = streamMap.filter(stream => stream.PostId !== postId);
+	streamMap.length = 0;
+	streamMap.push(...filteredStreams);
+}
 
 const updateMediaSources = (content: any, files: any) => {
 	content.content.forEach((item: any) => {
@@ -138,3 +202,5 @@ const updateContentSrc = (content: any, files: object[]) => {
 	let error = validateContent(content);
 	return { content, error };
 }
+
+
