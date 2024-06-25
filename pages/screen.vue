@@ -2,7 +2,7 @@
 	<div class="">
 		<div class="fixed top-0 w-screen h-screen flex flex-col justify-center p-6 items-center">
 			<div :class="Installed ? 'mt-8' : ''"
-				class="bg-slate-50 w-full h-screen rounded-xl flex flex-col justify-center items-center">
+				class="bg-slate-50 w-full h-full rounded-xl flex flex-col justify-center items-center">
 				<h1 class="text-4xl text-[#103C4A] font-bold mt-12">ForumWave</h1>
 				<p class="text-[#103C4A] mt-2">Alle vragen en antwoorden op één plek</p>
 

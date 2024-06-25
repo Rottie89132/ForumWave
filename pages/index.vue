@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="sm:px-28 md:px-30 lg:px-52 xl:px-80 pl-5 py-3 fixed w-full h-full">
+		<div class="sm:px-28 md:px-30 lg:px-52 xl:px-80 pl-5 py-3 fixed w-full h-full overflow-scroll">
 			<div class="bg-white sticky z-50 -top-4 py-3 pr-5">
 				<div class="flex items-center justify-between">
 					<div class="text-lg font-bold">
@@ -12,7 +12,6 @@
 							<icon name="bx:loader-circle" size="1.4em" :class="loading ? ' animate-spin' : ''"> </icon>
 						</button>
 						<PostsCreateButton v-model="status" />
-
 					</div>
 				</div>
 				<hr class="w-full mt-2 -mb-1" />

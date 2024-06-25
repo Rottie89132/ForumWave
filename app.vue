@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div v-show="isLoading && fromPath !== toPath" class="">
-			<div class="fixed bg-white z-50 top-0 w-screen h-screen flex flex-col justify-center p-6 items-center">
+			<div class="fixed bg-white z-50 top-0 w-screen h-full flex flex-col justify-center p-6 items-center">
 				<div :class="Installed ? 'mt-8' : ''" class=" bg-slate-50 w-full h-screen rounded-xl flex flex-col justify-center items-center">
 					<h2 class="text-4xl text-[#103C4A] font-bold">ForumWave</h2>
 					<div class="flex mt-6 space-x-2 justify-center items-center">
