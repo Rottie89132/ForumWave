@@ -53,6 +53,12 @@ export default defineEventHandler(async (event) => {
 				await client.storage.from('files').upload(`${PostId}/${ImageId}${extension}`, file.data, {
 					cacheControl: '3600',
 					contentType: extension === ".webp" ? "image/webp" : file.type,
+				}).catch((err: Error) => {
+					return reject({
+						statusCode: 500,
+						statusMessage: "Internal Server Error",
+						message: "Fout bij het uploaden van bestand, het bestand is mogelijk te groot (max 50mb).",
+					});
 				});
 
 				const src = client.storage.from('files').getPublicUrl(`${PostId}/${ImageId}${extension}`);
