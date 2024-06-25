@@ -33,6 +33,12 @@ export default defineEventHandler(async (event) => {
 				let extension = path.extname(file.filename).toLowerCase();
 				let buffer: Buffer | void
 
+				if (file.data.length > 4450000) return reject({
+					statusCode: 413,
+					statusMessage: "Payload Too Large",
+					message: "Fout bij het uploaden van bestand, het bestand is mogelijk te groot (max 4.45mb)."
+				})
+
 				if (!allowedTypes.includes(extension)) return reject({
 					statusCode: 415,
 					statusMessage: "Unsupported Media Type",
@@ -59,7 +65,7 @@ export default defineEventHandler(async (event) => {
 					return reject({
 						statusCode: 500,
 						statusMessage: "Internal Server Error",
-						message: "Fout bij het uploaden van bestand, het bestand is mogelijk te groot (max 50mb).",
+						message: "Error uploading file to storage",
 					});
 				});
 
