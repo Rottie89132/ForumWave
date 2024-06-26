@@ -22,16 +22,16 @@
 
 			<div class="mt-2 z-20">
 				<PostsDetails v-if="!error" 
-					:loading 
+					:loading="actionLoading" 
 					:items 
 					:disabled 
-					:openEditPostModal 
+					:openEditPostModal
 					:OpenDeletePostModal 
-					:UseMakeHtml
+					:UseMakeHtml 
 					:openCreatePostModal 
 					:addLike 
 					:unlike 
-				/>
+					/>
 			</div>
 			<div class="mt-3 mb-28">
 				<div>
@@ -44,11 +44,11 @@
 						<p class="text-gray-400">Er zijn nog geen reacties beschikbaar</p>
 					</div>
 					<PostsComments v-else 
-						:loading 
+						:loading="actionLoading" 
 						:comments 
 						:openEditPostModal 
-						:OpenDeletePostModal 
-						:UseMakeHtml
+						:OpenDeletePostModal
+						:UseMakeHtml 
 						:upVoteComment 
 						:downVoteComment 
 					/>
@@ -108,6 +108,7 @@
 	const items = ref([]);
 	const status = ref({});
 	const loading = ref(false);
+	const actionLoading = ref(false);
 	const content = ref("");
 	const isEdit = ref(false);
 	const comments = ref([]);
@@ -204,14 +205,14 @@
 	};
 
 	const OpenDeletePostModal = async (Comment, MessageId) => {
-		loading.value = true;
+		actionLoading.value = true;
 		if (Comment) {
 			CommentId.value = MessageId;
 			const { error, status } = await useFetch(`/api/posts/${id}/comments/${MessageId}`, {
 				method: "DELETE",
 			});
 
-			loading.value = status.value != "success";
+			actionLoading.value = status.value != "success";
 			if (!error.value) {
 				const { data: Post } = await useFetch(`/api/posts/${id}`);
 				items.value = Post.value
@@ -222,7 +223,7 @@
 				method: "DELETE",
 			});
 
-			loading.value = status.value != "success";
+			actionLoading.value = status.value != "success";
 			if (!error.value) {
 				navigateTo("/");
 			}
@@ -267,7 +268,7 @@
 	};
 
 	const sumbitReactie = async (callback) => {
-		loading.value = true;
+		actionLoading.value = true;
 		const result = callback();
 
 		status.value.error = undefined;
@@ -276,7 +277,7 @@
 			body: result,
 		});
 
-		loading.value = false;
+		actionLoading.value = false;
 		if (!error.value) {
 			const { data: Post } = await useFetch(`/api/posts/${id}`);
 			items.value = Post.value
