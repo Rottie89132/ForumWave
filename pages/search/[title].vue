@@ -12,10 +12,10 @@
                             <icon name="bx:loader-circle" size="1.4em" :class="loading ? ' animate-spin' : ''"> </icon>
                         </button>
                         <PostsCreateButton v-model="status" />
-                        <button @click="$router.back()"
+                        <NuxtLink to="/" 
                             class="bg-[#376A7A] border-[#376A7A] border text-[#ffffff] p-2 w-fit rounded-xl flex items-center justify-center">
                             <icon name="bx:arrow-back" size="1.4em" class="text-white"></icon>
-                        </button>
+                        </NuxtLink>
                     </div>
                 </div>
                 <hr class="w-full mt-2 -mb-1" />
@@ -61,6 +61,7 @@
 </template>
 
 <script setup>
+
     definePageMeta({
         middleware: "auth",
     });

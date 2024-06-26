@@ -12,7 +12,19 @@ export default defineEventHandler(async (event) => {
             })
 
             const query = getRouterParams(event).id
-            const posts: any = await Posts.findById(query);
+            const posts: any = await Posts.findById(query).catch(() => 
+                reject({
+                    statusCode: 404,
+                    statusMessage: "Not Found",
+                    message: "The requested resource could not be found but may be available in the future."
+                }))
+
+            if (!posts) return reject({
+                statusCode: 404,
+                statusMessage: "Not Found",
+                message: "The requested resource could not be found but may be available in the future."
+            })
+
             const author: any = await User.findById(posts.UserId)
             const PostUser: any = await User.findById(user.Id)
             const Comments = await Reacties.find({ ParentId: query }).sort({ "meta.Likes": -1, CreatedAt: -1 });

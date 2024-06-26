@@ -14,7 +14,18 @@ export default defineEventHandler((event) => {
             })
 
             const query = getRouterParams(event).id
-            const posts: any = await Posts.findById(query);
+            const posts: any = await Posts.findById(query).catch(() => reject({
+                statusCode: 404,
+                statusMessage: "Not Found",
+                message: "The requested resource could not be found but may be available in the future."
+            }))
+
+            if (!posts) return reject({
+                statusCode: 404,
+                statusMessage: "Not Found",
+                message: "The requested resource could not be found but may be available in the future."
+            })
+            
             const PostId = posts.PostId
 
             if (posts.UserId !== user.Id) return reject({
@@ -28,7 +39,11 @@ export default defineEventHandler((event) => {
                     limit: 100,
                     offset: 0,
                     sortBy: { column: 'name', order: 'asc' },
-                })
+                }).catch(() => reject({
+                    statusCode: 404,
+                    statusMessage: "Not Found",
+                    message: "The requested resource could not be found but may be available in the future."
+                }))
 
             data.forEach(async (file: any) => {
                 await client.storage.from('files').remove([`${PostId}/${file.name}`]);

@@ -20,7 +20,20 @@ export default defineEventHandler(async (event) => {
 
 			const data = await readMultipartFormData(event);
 			const readableData = await useReadable(data);
-			const PostData: any = await Posts.findById(query);
+			const PostData: any = await Posts.findById(query).catch(() => {
+				return reject({
+					statusCode: 404,
+					statusMessage: "Not Found",
+					message: "The requested resource could not be found but may be available in the future."
+				})
+			})
+
+			if (!PostData) return reject({
+				statusCode: 404,
+				statusMessage: "Not Found",
+				message: "The requested resource could not be found but may be available in the future."
+			})
+			
 			const PostDataId = PostData.PostId;
 
 			streamMap.push(readableData)

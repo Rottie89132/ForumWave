@@ -6,14 +6,17 @@ export default defineEventHandler((event) => {
 			const query = getRouterParams(event).id; 
 			const comment = getRouterParams(event).comment;
 			
-
 			if (!user) return {
 				statusCode: 401,
 				statusMessage: "Unauthorized",
 				message: "The request has not been applied because it lacks valid authentication credentials for the target resource.",
 			};
 
-			const posts: any = await Posts.findById(query);
+			const posts: any = await Posts.findById(query).catch(() => reject({
+				statusCode: 404,
+				statusMessage: "Not Found",
+				message: "The requested resource could not be found but may be available in the future.",
+			}));
 
 			if (!posts) return reject({
 				statusCode: 404,

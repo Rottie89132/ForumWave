@@ -21,7 +21,7 @@
 			</div>
 
 			<div class="mt-2 z-20">
-				<PostsDetails 
+				<PostsDetails v-if="!error" 
 					:loading 
 					:items 
 					:disabled 
@@ -37,10 +37,10 @@
 				<div>
 					<div class="flex items-center gap-2">
 						<h1 class="text-[#376A7A] font-semibold text-lg">Reacties</h1>
-						<span class="text-[#376A7A] opacity-60">({{ comments.length }})</span>
+						<span class="text-[#376A7A] opacity-60">({{ comments?.length }})</span>
 					</div>
 					<hr class="mt-2" />
-					<div v-if="comments.length < 1" class="mt-2">
+					<div v-if="comments?.length < 1" class="mt-2">
 						<p class="text-gray-400">Er zijn nog geen reacties beschikbaar</p>
 					</div>
 					<PostsComments v-else 
@@ -115,7 +115,12 @@
 	const CommentId = ref(null);
 	const disabled = ref(false);
 
-	const { data: Post } = await useFetch(`/api/posts/${id}`);
+	const { data: Post, error } = await useFetch(`/api/posts/${id}`);
+
+	if (error.value) {
+		navigateTo("/");
+	}
+
 	items.value = Post.value
 	comments.value = Post.value?.Comments;
 

@@ -13,10 +13,17 @@ export default defineEventHandler(async (event) => {
         const query = getRouterParams(event).id
         const PostUser: any = await User.findById(user.Id)
 
-
         if (!PostUser?.Likes.includes(query)) {
-            await Posts.findByIdAndUpdate(query, { $inc: { "meta.Likes": 1 } });
-            await User.findByIdAndUpdate(user.Id, { $push: { Likes: query } });
+            await Posts.findByIdAndUpdate(query, { $inc: { "meta.Likes": 1 } }).catch(() => reject({
+                statusCode: 404,
+                statusMessage: "Not Found",
+                message: "The requested resource could not be found but may be available in the future."
+            }));
+            await User.findByIdAndUpdate(user.Id, { $push: { Likes: query } }).catch(() => reject({
+                statusCode: 404,
+                statusMessage: "Not Found",
+                message: "The requested resource could not be found but may be available in the future."
+            }));
         }
 
         else return reject({
