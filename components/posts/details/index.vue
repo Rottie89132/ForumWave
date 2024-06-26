@@ -66,6 +66,11 @@
                         class="group-hover:scale-150 group-hover:mr-[0.25rem] transition-all duration-150"> </Icon>
                     <span class="group-hover:font-medium">{{ useCompact(items?.posts.meta?.Comments || 0) }}</span>
                 </div>
+                <span class="opacity-60"> | </span>
+                <button @click="share" class="flex gap-1 items-center group transition-all duration-150">
+                    <Icon name="solar:share-bold" size="1em"
+                        class="group-hover:scale-150 group-hover:mr-[0.25rem] transition-all duration-150"> </Icon>
+                </button>
             </div>
             <button @click="openCreatePostModal" class="text-[#376A7A]">
                 <span class="opacity-80"> Beantwoorden </span>
@@ -75,6 +80,7 @@
 </template>
 
 <script setup lang="ts">
+    
 	defineProps<{
 		items: any;
         loading: boolean;
@@ -86,4 +92,21 @@
 		addLike: () => void;
 		openCreatePostModal: () => void;
 	}>();
+
+    const share = () => {
+        const dummy = document.createElement('input')
+        const text = window.location.href;
+        dummy.style.opacity = '0';
+        dummy.style.position = 'absolute';
+        dummy.style.top = '0';
+
+        document.body.appendChild(dummy);
+        dummy.value = text;
+        dummy.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummy);
+        alert('Link gekopieerd')
+        
+    };
+
 </script>
