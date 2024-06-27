@@ -13,7 +13,7 @@ export default defineEventHandler((event) => {
             if (!user) return reject({
                 statusCode: 401,
                 statusMessage: "Unauthorized",
-                message: "The request has not been applied because it lacks valid authentication credentials for the target resource."
+                message: "De aanvraag is niet geautoriseerd en vereist authenticatie."
             })
 
             const hoursAgo = 6;

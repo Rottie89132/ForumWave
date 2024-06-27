@@ -16,13 +16,13 @@ export default defineEventHandler(async (event) => {
                 reject({
                     statusCode: 404,
                     statusMessage: "Not Found",
-                    message: "The requested resource could not be found but may be available in the future."
+                    message: "De opgevraagde bron kon niet worden gevonden, maar is mogelijk beschikbaar in de toekomst."
                 }))
 
             if (!posts) return reject({
                 statusCode: 404,
                 statusMessage: "Not Found",
-                message: "The requested resource could not be found but may be available in the future."
+                message: "De opgevraagde bron kon niet worden gevonden, maar is mogelijk beschikbaar in de toekomst."
             })
 
             const author: any = await User.findById(posts.UserId)

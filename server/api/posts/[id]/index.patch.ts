@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
 			if (!user) return reject({
 				statusCode: 401,
 				statusMessage: "Unauthorized",
-				message: "The request has not been applied because it lacks valid authentication credentials for the target resource."
+				message: "De aanvraag is niet geautoriseerd en vereist authenticatie."
 			})
 
 			const data = await readMultipartFormData(event);
@@ -24,14 +24,14 @@ export default defineEventHandler(async (event) => {
 				return reject({
 					statusCode: 404,
 					statusMessage: "Not Found",
-					message: "The requested resource could not be found but may be available in the future."
+					message: "De opgevraagde bron kon niet worden gevonden, maar is mogelijk beschikbaar in de toekomst."
 				})
 			})
 
 			if (!PostData) return reject({
 				statusCode: 404,
 				statusMessage: "Not Found",
-				message: "The requested resource could not be found but may be available in the future."
+				message: "De opgevraagde bron kon niet worden gevonden, maar is mogelijk beschikbaar in de toekomst."
 			})
 			
 			const PostDataId = PostData.PostId;
@@ -52,10 +52,9 @@ export default defineEventHandler(async (event) => {
 					cleanByPostId(PostId)
 
 					for (const file of files) {
-
 						const ImageId = crypto.randomUUID();
 						let extension = path.extname(file.filename).toLowerCase();
-						let buffer: Buffer | void
+						let buffer = file.data;
 
 						if (file.data.length > 50000000) return reject({
 							statusCode: 413,
@@ -66,40 +65,41 @@ export default defineEventHandler(async (event) => {
 						if (!allowedTypes.includes(extension)) return reject({
 							statusCode: 415,
 							statusMessage: "Unsupported Media Type",
-							message: "The server is refusing to service the request because the payload is in a format not supported by this method on the target resource."
+							message: "Fout bij het uploaden van bestand, het bestandstype wordt niet ondersteund."
 						})
 
 						if (extension === ".jpeg" || extension === ".jpg" || extension === ".png") {
 							buffer = await sharp(file.data).rotate().webp({ quality: 35 }).toBuffer().then(() => {
 								extension = ".webp"
 							}).catch((err: Error) => {
-								console.error(err)
 								return reject({
 									statusCode: 500,
 									statusMessage: "Internal Server Error",
-									message: "Error converting image to WEBP",
+									message: "Fout bij het omzetten van bestand naar webp",
 								})
 							});
 							extension = ".webp";
 						}
 
-						await client.storage.from('files').upload(`${PostDataId}/${ImageId}${extension}`, file.data, {
-							cacheControl: '3600',
-							contentType: extension === ".webp" ? "image/webp" : file.type,
-						}).catch((err: Error) => {
+						try {
+							await client.storage.from('files').upload(`${PostDataId}/${ImageId}${extension}`, buffer, {
+								cacheControl: '3600',
+								contentType: extension === ".webp" ? "image/webp" : file.type,
+							});
+
+							const src = client.storage.from('files').getPublicUrl(`${PostDataId}/${ImageId}${extension}`);
+							FilePaths.push({
+								title: file.filename,
+								src: src.data.publicUrl,
+								type: extension === ".mp4" ? "video" : extension === ".mov" ? "video" : "image",
+							});
+						} catch (err) {
 							return reject({
 								statusCode: 500,
 								statusMessage: "Internal Server Error",
-								message: "Error uploading file to storage",
+								message: "Fout bij het uploaden van bestand",
 							});
-						});
-
-						const src = client.storage.from('files').getPublicUrl(`${PostDataId}/${ImageId}${extension}`);
-						FilePaths.push({
-							title: file.filename,
-							src: src.data.publicUrl,
-							type: extension === ".mp4" ? "video" : extension === ".mov" ? "video" : "image",
-						});
+						}
 					}
 
 					const { content, error } = updateContentSrc(RawContent, FilePaths)
@@ -118,7 +118,7 @@ export default defineEventHandler(async (event) => {
 						return reject({
 							statusCode: 500,
 							statusMessage: "Internal Server Error",
-							message: "Error saving post to database",
+							message: "Fout bij het updaten van de post",
 						});
 					});
 				}

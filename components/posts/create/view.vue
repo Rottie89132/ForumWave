@@ -28,7 +28,6 @@
             body: result
         });
 
-        
         loading.value = false;
         if (!error.value) {
             setTimeout(() => {

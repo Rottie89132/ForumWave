@@ -223,9 +223,12 @@
 				method: "DELETE",
 			});
 
-			actionLoading.value = status.value != "success";
 			if (!error.value) {
+				actionLoading.value = status.value != "success";
 				navigateTo("/");
+			} else {
+				actionLoading.value = status.value == "success";
+				alert(error.value.data.message);
 			}
 		}
 	};

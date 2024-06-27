@@ -10,44 +10,48 @@ export default defineEventHandler((event) => {
             if (!user) return reject({
                 statusCode: 401,
                 statusMessage: "Unauthorized",
-                message: "The request has not been applied because it lacks valid authentication credentials for the target resource."
+                message: "De aanvraag is niet geautoriseerd en vereist authenticatie."
             })
 
             const query = getRouterParams(event).id
             const posts: any = await Posts.findById(query).catch(() => reject({
                 statusCode: 404,
                 statusMessage: "Not Found",
-                message: "The requested resource could not be found but may be available in the future."
+                message: "De opgevraagde bron kon niet worden gevonden, maar is mogelijk beschikbaar in de toekomst."
             }))
 
             if (!posts) return reject({
                 statusCode: 404,
                 statusMessage: "Not Found",
-                message: "The requested resource could not be found but may be available in the future."
+                message: "De opgevraagde bron kon niet worden gevonden, maar is mogelijk beschikbaar in de toekomst."
             })
-            
+
             const PostId = posts.PostId
 
             if (posts.UserId !== user.Id) return reject({
                 statusCode: 403,
                 statusMessage: "Forbidden",
-                message: "The server understood the request but refuses to authorize it."
+                message: "De server begrijpt de aanvraag, maar weigert deze uit te voeren."
             })
 
-            const { data, error }: any = await client.storage.from('files')
-                .list(posts.PostId, {
+            if (containsMedia(posts.Content.content)) {
+                const { data, error }: any = await client.storage.from('files').list(posts.PostId, {
                     limit: 100,
                     offset: 0,
                     sortBy: { column: 'name', order: 'asc' },
                 }).catch(() => reject({
                     statusCode: 404,
                     statusMessage: "Not Found",
-                    message: "The requested resource could not be found but may be available in the future."
+                    message: "De opgevraagde bron kon niet worden gevonden, maar is mogelijk beschikbaar in de toekomst."
                 }))
 
-            data.forEach(async (file: any) => {
-                await client.storage.from('files').remove([`${PostId}/${file.name}`]);
-            })
+                if (!error) data.forEach(async (file: any) => await client.storage.from('files').remove([`${PostId}/${file.name}`]))
+                else return reject({
+                    statusCode: 500,
+                    statusMessage: "Internal Server Error",
+                    message: "De bestanden konden niet worden verwijderd, probeer het later opnieuw."
+                })
+            }
 
             await Posts.findByIdAndDelete(query)
             await Reacties.deleteMany({ ParentId: query })
@@ -61,3 +65,12 @@ export default defineEventHandler((event) => {
         }, 500);
     });
 });
+
+const containsMedia = (content: any[]): boolean => {
+    for (const item of content) {
+        if (item.type === 'video' || item.type === 'image') {
+            return true;
+        }
+    }
+    return false;
+}

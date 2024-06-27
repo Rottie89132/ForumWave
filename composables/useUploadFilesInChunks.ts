@@ -61,13 +61,18 @@ export default async (url: any, options: any, maxPayloadSize = 3 * 1024 * 1024) 
                 body: chunkFormData,
             });
 
-            if (error.value) return response.error = error;
+
+            if (error.value) response.error = error;
             else response.data = data;
+
+            if (error.value ) return response;
 
             start += maxPayloadSize;
             chunkIndex++;
         }
     }
+
+   
 
     return response;
 };

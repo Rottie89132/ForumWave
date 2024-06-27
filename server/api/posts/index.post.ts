@@ -5,91 +5,91 @@ import crypto from "crypto";
 import { serverSupabaseServiceRole } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
-	return new Promise((resolve, reject) => {
-		setTimeout(async () => {
-			const client = serverSupabaseServiceRole(event)
-			const SessionId: Record<string, any> | any = getCookie(event, "access-token")
-			const user: Record<string, any> | null = await useVercelStorage().getItem(SessionId)
+    return new Promise((resolve, reject) => {
+        setTimeout(async () => {
+            const client = serverSupabaseServiceRole(event)
+            const SessionId: Record<string, any> | any = getCookie(event, "access-token")
+            const user: Record<string, any> | null = await useVercelStorage().getItem(SessionId)
 
-			if (!user) return reject({
-				statusCode: 401,
-				statusMessage: "Unauthorized",
-				message: "The request has not been applied because it lacks valid authentication credentials for the target resource."
-			})
+            if (!user) return reject({
+                statusCode: 401,
+                statusMessage: "Unauthorized",
+                message: "De aanvraag is niet geautoriseerd en vereist authenticatie."
+            })
 
-			const data = await readMultipartFormData(event);
-			const readableData = await useReadable(data);
-			const PostDataId = crypto.randomUUID();
+            const data = await readMultipartFormData(event);
+            const readableData = await useReadable(data);
+            const PostDataId = crypto.randomUUID();
 
-			streamMap.push(readableData)
-			const { uploadId, PostId, chunkIndex, totalChunks, totalCount, CountIndex, } = readableData;
+            streamMap.push(readableData)
+            const { uploadId, PostId, chunkIndex, totalChunks, totalCount, CountIndex, } = readableData;
 
+            if (CountIndex == totalCount) {
+                if (chunkIndex == totalChunks) {
+                    const { content: RawContent, files }: any = mergeDataByPostId(PostId, uploadId)
 
-			if (CountIndex == totalCount) {
-				if (chunkIndex == totalChunks) {
-					const { content: RawContent, files }: any = mergeDataByPostId(PostId, uploadId)
+                    const Error = validateContent(RawContent);
+                    if (Error) return reject(Error)
 
-					const Error = validateContent(RawContent);
-					if (Error) return reject(Error)
+                    const allowedTypes = [".png", ".jpeg", ".jpg", ".gif", ".mp4", ".mov"];
+                    const FilePaths: object[] = [];
 
-					const allowedTypes = [".png", ".jpeg", ".jpg", ".gif", ".mp4", ".mov"];
-					const FilePaths: object[] = [];
+                    cleanByPostId(PostId)
 
-					cleanByPostId(PostId)
+                    for (const file of files) {
+                        const ImageId = crypto.randomUUID();
+                        let extension = path.extname(file.filename).toLowerCase();
+                        let buffer = file.data;
 
-					for (const file of files) {
+                        if (file.data.length > 50000000) return reject({
+                            statusCode: 413,
+                            statusMessage: "Payload Too Large",
+                            message: "Fout bij het uploaden van bestand, het bestand is mogelijk te groot (max 4.45mb)."
+                        })
 
-						const ImageId = crypto.randomUUID();
-						let extension = path.extname(file.filename).toLowerCase();
-						let buffer: Buffer | void
+                        if (!allowedTypes.includes(extension)) return reject({
+                            statusCode: 415,
+                            statusMessage: "Unsupported Media Type",
+                            message: "Fout bij het uploaden van bestand, het bestandstype wordt niet ondersteund."    
+                        })
 
-						if (file.data.length > 50000000) return reject({
-							statusCode: 413,
-							statusMessage: "Payload Too Large",
-							message: "Fout bij het uploaden van bestand, het bestand is mogelijk te groot (max 4.45mb)."
-						})
-
-						if (!allowedTypes.includes(extension)) return reject({
-							statusCode: 415,
-							statusMessage: "Unsupported Media Type",
-							message: "The server is refusing to service the request because the payload is in a format not supported by this method on the target resource."
-						})
-
+                        
 						if (extension === ".jpeg" || extension === ".jpg" || extension === ".png") {
 							buffer = await sharp(file.data).rotate().webp({ quality: 35 }).toBuffer().then(() => {
 								extension = ".webp"
 							}).catch((err: Error) => {
-								console.error(err)
 								return reject({
 									statusCode: 500,
 									statusMessage: "Internal Server Error",
-									message: "Error converting image to WEBP",
+									message: "Fout bij het omzetten van bestand naar webp",
 								})
 							});
 							extension = ".webp";
 						}
 
-						await client.storage.from('files').upload(`${PostDataId}/${ImageId}${extension}`, file.data, {
-							cacheControl: '3600',
-							contentType: extension === ".webp" ? "image/webp" : file.type,
-						}).catch((err: Error) => {
-							return reject({
-								statusCode: 500,
-								statusMessage: "Internal Server Error",
-								message: "Error uploading file to storage",
-							});
-						});
+                        try {
+                            await client.storage.from('files').upload(`${PostDataId}/${ImageId}${extension}`, buffer, {
+                                cacheControl: '3600',
+                                contentType: extension === ".webp" ? "image/webp" : file.type,
+                            });
 
-						const src = client.storage.from('files').getPublicUrl(`${PostDataId}/${ImageId}${extension}`);
-						FilePaths.push({
-							title: file.filename,
-							src: src.data.publicUrl,
-							type: extension === ".mp4" ? "video" : extension === ".mov" ? "video" : "image",
-						});
-					}
+                            const src = client.storage.from('files').getPublicUrl(`${PostDataId}/${ImageId}${extension}`);
+                            FilePaths.push({
+                                title: file.filename,
+                                src: src.data.publicUrl,
+                                type: extension === ".mp4" ? "video" : extension === ".mov" ? "video" : "image",
+                            });
+                        } catch (err) {
+                            return reject({
+                                statusCode: 500,
+                                statusMessage: "Internal Server Error",
+                                message: "Fout bij het uploaden van bestand",
+                            });
+                        }
+                    }
 
-					const { content, error } = updateContentSrc(RawContent, FilePaths)
-					if (error) return reject(error)
+                    const { content, error } = updateContentSrc(RawContent, FilePaths)
+                    if (error) return reject(error)
 
 					await Posts.create({
 						UserId: user.Id,
@@ -109,18 +109,18 @@ export default defineEventHandler(async (event) => {
 						return reject({
 							statusCode: 500,
 							statusMessage: "Internal Server Error",
-							message: "Error saving post to database",
+							message: "Fout bij het uploaden van de post",
 						});
 					});
-				}
-			}
-			return resolve({
-				statusCode: 200,
-				statusMessage: "OK",
-				message: "Chunk uploaded successfully",
-			});
-		}, 50);
-	});
+                }
+            }
+            return resolve({
+                statusCode: 200,
+                statusMessage: "OK",
+                message: "Chunk uploaded successfully",
+            });
+        }, 50);
+    });
 });
 
 const mergeDataByPostId = (postId: string, uploadId: string) => {
