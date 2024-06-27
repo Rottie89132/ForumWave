@@ -2,6 +2,20 @@
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
+
+## Requirements 
+
+To start deploying it make sure you have the following
+
+[MongodB](https://www.mongodb.com/)
+[Supabase](https://supabase.com/)
+[vercel](https://vercel.com/)
+
+You need to have Node installed and the minimal required version is 20.9.0, to check the current version use the following command
+```bash
+  node -v
+```
+
 ## Setup
 
 Make sure to install the dependencies:
@@ -24,9 +38,10 @@ Make sure to add the following environment variables
 
 ```env
 MONGODB_URI=""
-SUPABASE_URL=""
-SUPABASE_KEY=""
-SUPABASE_SERVICE_KEY=""
+NEXT_PUBLIC_SUPABASE_URL=""
+NEXT_PUBLIC_SUPABASE_ANON_KEY=""
+SUPABASE_SERVICE_ROLE_KEY=""
+production="1"
 KV_REST_API_URL=""
 KV_REST_API_KEY=""
 ```
