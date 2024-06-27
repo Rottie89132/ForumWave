@@ -15,6 +15,9 @@ export default defineNuxtConfig({
     "@nuxtjs/supabase"
   ],
   supabase: {
+    url: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    key: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    serviceKey: process.env.SUPABASE_SERVICE_ROLE_KEY,
     redirectOptions: {
       login: '/screen',
       callback: '/confirm',
@@ -84,12 +87,6 @@ export default defineNuxtConfig({
     }
   },
   nitro: {
-    devStorage: {
-      Sessions:{
-        driver: "fs",
-        base: "./server/storage",
-      },
-    },
     imports: {
       dirs: ["./server/utils"],
       presets: [{

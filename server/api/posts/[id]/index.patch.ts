@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
 					for (const file of files) {
 						const ImageId = crypto.randomUUID();
 						let extension = path.extname(file.filename).toLowerCase();
-						let buffer = file.data;
+						let buffer: Buffer = file.data;
 
 						if (file.data.length > 50000000) return reject({
 							statusCode: 413,
@@ -69,7 +69,8 @@ export default defineEventHandler(async (event) => {
 						})
 
 						if (extension === ".jpeg" || extension === ".jpg" || extension === ".png") {
-							buffer = await sharp(file.data).rotate().webp({ quality: 35 }).toBuffer().then(() => {
+							await sharp(file.data).rotate().webp({ quality: 10 }).toBuffer().then((data) => {
+								buffer = data;
 								extension = ".webp"
 							}).catch((err: Error) => {
 								return reject({
@@ -78,7 +79,6 @@ export default defineEventHandler(async (event) => {
 									message: "Fout bij het omzetten van bestand naar webp",
 								})
 							});
-							extension = ".webp";
 						}
 
 						try {

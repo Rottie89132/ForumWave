@@ -45,7 +45,7 @@
 					</div>
 				</div>
 				<div v-else class="-mt-1">
-					<p class="text-gray -400">Er zijn nog geen populaire posts beschikbaar</p>
+					<p class="text-gray-400">Er zijn nog geen populaire posts beschikbaar</p>
 				</div>
 			</div>
 			<div class="mt-4">
