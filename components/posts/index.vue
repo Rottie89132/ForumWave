@@ -1,7 +1,7 @@
 <template>
 	<div @click="navigateTo(`/posts/${item.data.id}`)"
 		class="p-1 rounded-md border select-none border-gray-400 h-[28vh] w-[10em]">
-		<template v-if="isVideo(item.data.media)">
+		<template v-if="isVideo(media)">
 			<div class="p-2 z-20 relative bg-black bg-opacity-50 text-white flex items-end rounded-md w-full h-full">
 				<div class="flex gap-4 flex-col justify-end pb-2">
 					<div class="">
@@ -45,12 +45,13 @@
 					</div>
 				</div>
 			</div>
-			<video :src="item.data.media" muted type="video/mp4" playsinline autoplay loop preload="metadata"
-				class="rounded-md h-full -mt-[26.9vh] z-10 w-full re object-cover"></video>
+			<video :src="media" muted type="video/mp4" playsinline autoplay loop preload="metadata"
+				class="rounded-md h-full -mt-[26.9vh] z-10 w-full re object-cover">
+			</video>
 		</template>
 		<template v-else>
 			<div class="rounded-md h-full w-full background_image bg-slate-50"
-				:style="item.data?.media ? `background-image: url('${item.data?.media}');` : `background-image: url('/Post.png')`">
+				:style="media ? `background-image: url('${media}');` : `background-image: url('/Placeholder.webp')`">
 				<div class="p-2 bg-black bg-opacity-50 text-white flex items-end rounded-md w-full h-full">
 					<div class="flex gap-4 flex-col justify-end pb-2">
 						<div class="">
@@ -100,14 +101,26 @@
 </template>
 
 <script setup>
+const media = ref(null);
 
-defineProps({
+const { item} = defineProps({
     item: Object,
 });
 
-const isVideo = (mediaUrl) => {
-	return mediaUrl && (mediaUrl.includes('.mp4') || mediaUrl.includes('.mov')); 
+media.value = item.data.media;
+const image = new Image();
+image.src = media.value;
+image.onerror = () => {
+	media.value = null;
 };
+
+
+const isVideo = (mediaUrl) => {
+	return mediaUrl && (mediaUrl.includes('.mp4') || mediaUrl.includes('.mov'));
+};
+
+
+
 </script>
 
 <style scoped>
