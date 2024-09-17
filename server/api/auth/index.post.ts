@@ -1,4 +1,4 @@
-import { version } from "vue";
+
 import * as zod from "zod";
 
 export default defineEventHandler((event) => {
