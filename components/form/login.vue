@@ -9,7 +9,7 @@
                 <span v-if="loading">
                     <icon class=" animate-spin" name="bx:loader-circle" size="1.5em"></icon>
                 </span>
-                <span v-else>Inlogen</span>
+                <span v-else>Inloggen</span>
             </button>
         </Form>
     </div>
