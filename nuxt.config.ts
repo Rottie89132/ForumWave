@@ -1,8 +1,7 @@
-
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: false },
+
   modules: [
     "@nuxtjs/tailwindcss",
     "@nuxt/image",
@@ -14,6 +13,11 @@ export default defineNuxtConfig({
     "nuxt-tiptap-editor",
     "@nuxtjs/supabase"
   ],
+
+  veeValidate: {
+    autoImports: false,
+  },
+
   supabase: {
     url: process.env.NEXT_PUBLIC_SUPABASE_URL,
     key: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
@@ -26,9 +30,11 @@ export default defineNuxtConfig({
       cookieRedirect: true,
     },
   },
+
   tiptap: {
     prefix: "Tiptap", 
   },
+
   pwa: {
     strategies: "injectManifest",
     registerType: 'autoUpdate',
@@ -76,6 +82,7 @@ export default defineNuxtConfig({
       suppressWarnings: true,
     },
   },
+
   app: {
     head: {
       meta: [
@@ -86,6 +93,7 @@ export default defineNuxtConfig({
       viewport: 'viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no',
     }
   },
+
   nitro: {
     imports: {
       dirs: ["./server/utils"],
@@ -95,4 +103,6 @@ export default defineNuxtConfig({
       }],
     },
   },
+
+  compatibilityDate: "2024-09-17",
 })

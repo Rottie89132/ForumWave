@@ -61,6 +61,7 @@
 </template>
 
 <script setup>
+    import { Form } from 'vee-validate';
 
     definePageMeta({
         middleware: "auth",

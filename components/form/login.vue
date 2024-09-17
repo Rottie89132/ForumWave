@@ -16,6 +16,7 @@
 </template>
 
 <script setup>
+    import { Form } from 'vee-validate';
     import { toTypedSchema } from '@vee-validate/zod';
     import * as zod from 'zod';
 
@@ -30,12 +31,12 @@
 
 	const handleSubmit = async (values, actions) => {
         loading.value = true
-        const { data, error, pending } = await useFetch("/api/auth", {
+        const { data, error } = await useFetch("/api/auth", {
             method: "POST",
             body: values
         })
 
-        loading.value = pending.value
+        loading.value = false
 
         if (error.value) {
             actions.setErrors(error.value.data.data)

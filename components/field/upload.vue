@@ -1,5 +1,5 @@
 <template>
-	<field :name="name" v-slot="{ handleChange, handleBlur, meta }">
+	<Field :name="name" v-slot="{ handleChange, handleBlur, meta }">
 		<div class="flex items-center justify-center w-full">
 			<label for="dropzone-file" :class="meta.touched && !meta.valid ? ' text-[#B92538] border-[#B92538]' : meta.valid ? ' border-green-700 text-green-700' : ' border-gray-300 text-gray-400'" class="flex flex-col items-center justify-center w-full h-fit border-2 border-dashed rounded-lg cursor-pointer bg-gray-50">
 				<div class="flex flex-col items-center justify-center pt-5 pb-6">
@@ -13,10 +13,12 @@
 			</label>
 		</div>
 		<ErrorMessage class="mt-3 mb-4 text-xs text-[#B92538] block" :name="name" />
-	</field>
+	</Field>
 </template>
 
 <script setup lang="ts">
+	import { Field, ErrorMessage } from 'vee-validate';
+
 	const probs = defineProps({
 		type: { type: String, default: "text" },
 		label: { type: String, default: "Input" },

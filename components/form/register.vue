@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-
+    import { Form } from 'vee-validate';
     import { toTypedSchema } from '@vee-validate/zod';
     import * as zod from 'zod';
 
