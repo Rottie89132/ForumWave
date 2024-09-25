@@ -122,10 +122,8 @@
 	popularTotalPages.value = popularPosts.value?.totalPages;
 
 	const handleSearch = async () => {
-
-		if(searchParams.value == "") return;
+		if (searchParams.value == "") return navigateTo(`/search`);
 		navigateTo(`/search/${searchParams.value}`);
-	
 	};
 
 	const refresh = async () => {

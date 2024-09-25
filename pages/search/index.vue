@@ -80,7 +80,7 @@
         twitterCard: "summary",
     });
 
-    const searchParams = ref(useRoute().params.title);
+    const searchParams = ref("");
     const items = ref([]);
     const itemsTotalPages = ref(0);
     const itemsPages = ref(1);
