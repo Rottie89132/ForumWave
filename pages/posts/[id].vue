@@ -7,12 +7,10 @@
 						<NuxtLink to="/" class="text-lg font-bold">Home</NuxtLink>
 					</div>
 					<div class="flex items-center gap-2">
-						<button @click="refresh"
-							class="border-[#376A7A] border text-[#376A7A] p-2 w-fit rounded-xl flex items-center justify-center">
+						<button @click="refresh" class="border-[#376A7A] border text-[#376A7A] p-2 w-fit rounded-xl flex items-center justify-center">
 							<icon name="bx:loader-circle" size="1.4em" :class="loading ? ' animate-spin' : ''"> </icon>
 						</button>
-						<button @click="$router.back()"
-							class="bg-[#376A7A] border-[#376A7A] border text-[#ffffff] p-2 w-fit rounded-xl flex items-center justify-center">
+						<button @click="$router.back()" class="bg-[#376A7A] border-[#376A7A] border text-[#ffffff] p-2 w-fit rounded-xl flex items-center justify-center">
 							<icon name="bx:arrow-back" size="1.4em" class="text-white"></icon>
 						</button>
 					</div>
@@ -21,8 +19,7 @@
 			</div>
 
 			<div class="mt-2 z-20">
-				<PostsDetails v-if="!error" :loading="actionLoading" :items :disabled :openEditPostModal
-					:OpenDeletePostModal :UseMakeHtml :openCreatePostModal :addLike :unlike />
+				<PostsDetails v-if="!error" :loading="actionLoading" :items :disabled :OpenDeletePostModal :UseMakeHtml :openCreatePostModal :addLike :unlike />
 			</div>
 			<div class="mt-3 mb-28">
 				<div>
@@ -34,8 +31,7 @@
 					<div v-if="comments?.length < 1" class="mt-2">
 						<p class="text-gray-400">Er zijn nog geen reacties beschikbaar</p>
 					</div>
-					<PostsComments v-else :loading="actionLoading" :comments :openEditPostModal :OpenDeletePostModal
-						:UseMakeHtml :upVoteComment :downVoteComment />
+					<PostsComments v-else :loading="actionLoading" :comments :openEditPostModal :OpenDeletePostModal :UseMakeHtml :upVoteComment :downVoteComment />
 				</div>
 			</div>
 		</div>
@@ -45,8 +41,7 @@
 				<p v-else class="mb-3">Hier kan je de reactie bewerken</p>
 				<hr class="hidden md:block my-2" />
 
-				<TipTapEditor v-if="!isComment" v-model="status" :submit :loading :content />
-				<TipTapEditorReactie v-else v-model="status" :submit="SumbitEditReactie" :loading :content />
+				<TipTapEditorReactie v-model="status" :submit="SumbitEditReactie" :loading :content />
 				<div v-if="status?.error" class="flex justify-start gap-2 mt-2">
 					<p class="text-red-600 text-sm">
 						{{ status.error }}
@@ -106,7 +101,7 @@
 		navigateTo("/");
 	}
 
-	items.value = Post.value
+	items.value = Post.value;
 	comments.value = Post.value?.Comments;
 
 	const UseMakeHtml = (item) => {
@@ -141,31 +136,27 @@
 	const output = computed(() => UseMakeHtml(items.value));
 
 	const upVoteComment = async (MessageId) => {
-
 		const { data, error } = await useFetch(`/api/posts/${id}/comments/vote/${MessageId}`, {
 			method: "patch",
 		});
 
 		if (!error.value) {
 			const { data: Post } = await useFetch(`/api/posts/${id}`);
-			items.value = Post.value
+			items.value = Post.value;
 			comments.value = Post.value?.Comments;
 		}
-
 	};
 
 	const downVoteComment = async (MessageId) => {
-
 		const { data, error } = await useFetch(`/api/posts/${id}/comments/vote/${MessageId}?DownVote=true`, {
 			method: "patch",
 		});
 
 		if (!error.value) {
 			const { data: Post } = await useFetch(`/api/posts/${id}`);
-			items.value = Post.value
+			items.value = Post.value;
 			comments.value = Post.value?.Comments;
 		}
-
 	};
 
 	const refresh = async () => {
@@ -173,7 +164,7 @@
 		const { data: Post, status } = await useFetch(`/api/posts/${id}?reload=true`);
 
 		loading.value = status.value != "success";
-		items.value = Post.value
+		items.value = Post.value;
 		comments.value = Post.value?.Comments;
 	};
 
@@ -199,7 +190,7 @@
 			actionLoading.value = status.value != "success";
 			if (!error.value) {
 				const { data: Post } = await useFetch(`/api/posts/${id}`);
-				items.value = Post.value
+				items.value = Post.value;
 				comments.value = Post.value?.Comments;
 			}
 		} else {
@@ -225,7 +216,7 @@
 
 		if (!error.value) {
 			const { data: Post } = await useFetch(`/api/posts/${id}`);
-			items.value = Post.value
+			items.value = Post.value;
 		}
 
 		disabled.value = status.value != "success";
@@ -239,7 +230,7 @@
 
 		if (!error.value) {
 			const { data: Post } = await useFetch(`/api/posts/${id}`);
-			items.value = Post.value
+			items.value = Post.value;
 		}
 
 		disabled.value = status.value != "success";
@@ -267,7 +258,7 @@
 		actionLoading.value = false;
 		if (!error.value) {
 			const { data: Post } = await useFetch(`/api/posts/${id}`);
-			items.value = Post.value
+			items.value = Post.value;
 			comments.value = Post.value?.Comments;
 			status.value = false;
 		} else {
@@ -292,7 +283,7 @@
 		loading.value = false;
 		if (!error.value) {
 			const { data: Post } = await useFetch(`/api/posts/${id}`);
-			items.value = Post.value
+			items.value = Post.value;
 			comments.value = Post.value?.Comments;
 			status.value = false;
 		} else {
@@ -317,7 +308,7 @@
 
 		if (!error.value) {
 			const { data: Post } = await useFetch(`/api/posts/${id}`);
-			items.value = Post.value
+			items.value = Post.value;
 			comments.value = Post.value?.Comments;
 			status.value = false;
 		} else {
@@ -328,5 +319,4 @@
 			};
 		}
 	};
-
 </script>

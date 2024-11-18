@@ -7,16 +7,13 @@
 						<NuxtLink to="/" class="text-lg font-bold">Home</NuxtLink>
 					</div>
 					<div class="flex items-center gap-2">
-						<button @click="refresh"
-							class="border-[#376A7A] border text-[#376A7A] p-2 w-fit rounded-xl flex items-center justify-center">
+						<button @click="refresh" class="border-[#376A7A] border text-[#376A7A] p-2 w-fit rounded-xl flex items-center justify-center">
 							<icon name="bx:loader-circle" size="1.4em" :class="loading ? ' animate-spin' : ''"></icon>
 						</button>
-						<span
-							class="border-[#376A7A] text-sm w-16 border text-[#376A7A] p-[0.56rem] rounded-xl flex items-center justify-center">
+						<span class="border-[#376A7A] text-sm w-16 border text-[#376A7A] p-[0.56rem] rounded-xl flex items-center justify-center">
 							{{ Pages }}
 						</span>
-						<button @click="$router.back()"
-							class="bg-[#376A7A] border-[#376A7A] border text-[#ffffff] p-2 w-fit rounded-xl flex items-center justify-center">
+						<button @click="$router.back()" class="bg-[#376A7A] border-[#376A7A] border text-[#ffffff] p-2 w-fit rounded-xl flex items-center justify-center">
 							<icon name="bx:arrow-back" size="1.4em" class=""></icon>
 						</button>
 					</div>
@@ -26,25 +23,18 @@
 
 			<div class="mt-2 z-20">
 				<div class="mb-16">
-					<div class=" mb-3">
-						<h1 class=" font-bold ">
-							Overzicht van {{ user.user.Username || "Onbekent" }}
-						</h1>
+					<div class="mb-3">
+						<h1 class="font-bold">Overzicht van {{ user.user.Username || "Onbekent" }}</h1>
 					</div>
-					<div class="grid grid-cols-2 mb-3 border rounded-lg  overflow-hidden bg-gray-100 cursor-pointer">
-						<div class="flex justify-center items-center py-2"
-							:class="activeTab === 'Posts' ? 'bg-[#376A7A] text-white rounded-lg' : 'bg-gray-100'"
-							@click="setActiveTab('Posts')">
+					<div class="grid grid-cols-2 mb-3 border rounded-lg overflow-hidden bg-gray-100 cursor-pointer">
+						<div class="flex justify-center items-center py-2" :class="activeTab === 'Posts' ? 'bg-[#376A7A] text-white rounded-lg' : 'bg-gray-100'" @click="setActiveTab('Posts')">
 							<span class="text-sm">Posts</span>
 						</div>
-						<div class="flex justify-center items-center py-2"
-							:class="activeTab === 'Comments' ? 'bg-[#376A7A] text-white rounded-lg' : 'bg-gray-100'"
-							@click="setActiveTab('Comments')">
+						<div class="flex justify-center items-center py-2" :class="activeTab === 'Comments' ? 'bg-[#376A7A] text-white rounded-lg' : 'bg-gray-100'" @click="setActiveTab('Comments')">
 							<span class="text-sm">Comments</span>
 						</div>
 					</div>
-					<div v-if="items.length > 0" v-bind="containerProps"
-						class="h-[62vh] md:h-[65.5vh] overflow-scroll w-full">
+					<div v-if="items.length > 0" v-bind="containerProps" class="h-[62vh] md:h-[65.5vh] overflow-scroll w-full">
 						<div v-bind="wrapperProps" class="flex flex-col gap-3 snap-y snap-proximity scroll-smooth">
 							<div class="bg-gray-50 p-3 h-[95px] overflow-hidden rounded-md border" v-for="posts in list" :key="posts.index">
 								<PostsCreated v-if="activeTab === 'Posts'" :posts />
@@ -52,9 +42,7 @@
 							</div>
 						</div>
 					</div>
-					<p v-if="items.length < 1" class=" opacity-60 font-semibold ">
-						Er zijn nog geen {{ activeTab.toLocaleLowerCase() }} beschikbaar
-					</p>
+					<p v-if="items.length < 1" class="opacity-60 font-semibold">Er zijn nog geen {{ activeTab.toLocaleLowerCase() }} beschikbaar</p>
 				</div>
 			</div>
 		</div>
@@ -62,7 +50,6 @@
 </template>
 
 <script setup>
-
 	definePageMeta({
 		middleware: "auth",
 	});
@@ -101,11 +88,11 @@
 
 	const setActiveTab = async (tab) => {
 		loading.value = true;
-		const itemData = ref()
-		const itemTotalPages = ref()
-		const itemsStatus = ref()
+		const itemData = ref();
+		const itemTotalPages = ref();
+		const itemsStatus = ref();
 
-		if(tab == "Comments") {
+		if (tab == "Comments") {
 			const { data, status } = await useFetch(`/api/users/comments?page=1&SearchId=${userId}&reload=true`);
 			itemData.value = data.value?.comments;
 			itemTotalPages.value = data.value?.totalPages;
@@ -120,18 +107,17 @@
 		loading.value = itemsStatus.value != "success";
 		activeTab.value = tab;
 
-		items.value = itemData.value
-		TotalPages.value = itemTotalPages.value
+		items.value = itemData.value;
+		TotalPages.value = itemTotalPages.value;
 		Pages.value = 1;
 		navigateTo(`/user/${userId}?tab=${tab}`);
-
 	};
 
 	const refresh = async () => {
 		loading.value = true;
-		const itemData = ref()
-		const itemTotalPages = ref()
-		const itemsStatus = ref()
+		const itemData = ref();
+		const itemTotalPages = ref();
+		const itemsStatus = ref();
 
 		if (activeTab.value == "Comments") {
 			const { data, status } = await useFetch(`/api/users/comments?page=1&SearchId=${userId}&reload=true`);
@@ -146,13 +132,13 @@
 		}
 
 		loading.value = itemsStatus.value != "success";
-		items.value = itemData.value
-		TotalPages.value = itemTotalPages.value
+		items.value = itemData.value;
+		TotalPages.value = itemTotalPages.value;
 		Pages.value = 1;
 	};
 
 	const { list, containerProps, wrapperProps } = useVirtualList(items, {
-		itemHeight: 105
+		itemHeight: 105,
 	});
 
 	useInfiniteScroll(
@@ -165,7 +151,7 @@
 
 			if (activeTab.value == "Comments") {
 				const data = await $fetch(`/api/users/comments?page=${Pages.value}&SearchId=${userId}`);
-				
+
 				setTimeout(() => {
 					loading.value = false;
 				}, 500);
@@ -174,11 +160,11 @@
 				TotalPages.value = data.totalPages;
 			} else {
 				const data = await $fetch(`/api/users/posts?page=${Pages.value}&SearchId=${userId}`);
-				
+
 				setTimeout(() => {
 					loading.value = false;
 				}, 500);
-				
+
 				items.value.push(...data.posts);
 				TotalPages.value = data.totalPages;
 			}

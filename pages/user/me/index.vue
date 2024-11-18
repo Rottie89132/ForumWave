@@ -7,14 +7,9 @@
 						<NuxtLink to="/" class="text-lg font-bold">Home</NuxtLink>
 					</div>
 					<div class="flex items-center gap-2">
-						<button @click="logout"
-							class="border-[#376A7A] border text-[#376A7A] p-[0.45rem] px-4 w-fit rounded-xl flex items-center justify-center">
-							Uitloggen
-						</button>
-
-						<PostsCreateButton v-model="status" />
-						<button @click="$router.back()"
-							class="bg-[#376A7A] border-[#376A7A] border text-[#ffffff] p-2 w-fit rounded-xl flex items-center justify-center">
+						<button @click="logout" class="border-[#376A7A] border text-[#376A7A] p-[0.45rem] px-4 w-fit rounded-xl flex items-center justify-center">Uitloggen</button>
+						<PostsCreateButton />
+						<button @click="$router.back()" class="bg-[#376A7A] border-[#376A7A] border text-[#ffffff] p-2 w-fit rounded-xl flex items-center justify-center">
 							<icon name="bx:arrow-back" size="1.4em" class=""></icon>
 						</button>
 					</div>
@@ -25,70 +20,53 @@
 			<div class="mt-2 z-20">
 				<div class="">
 					<div class="bg-gray-50 p-3 md:p-5 rounded-md border">
-						<h1 class=" font-semibold ">
-							Hallo <span class=" text-[#376A7A] text-lg font-bold">
+						<h1 class="font-semibold">
+							Hallo
+							<span class="text-[#376A7A] text-lg font-bold">
 								{{ user.Name || "Onbekent" }}
 							</span>
 						</h1>
-						<p class=" opacity-50">
-							<span class=" font-medium ">
+						<p class="opacity-50">
+							<span class="font-medium">
 								{{ user.Email || "Er is geen email bekend" }}
 							</span>
 						</p>
 						<hr class="my-2" />
-						<p class=" text-sm opacity-30 ">
+						<p class="text-sm opacity-30">
 							{{ user.Id }}
 						</p>
 					</div>
 				</div>
-				<div class=" mt-3">
+				<div class="mt-3">
 					<div class="bg-gray-50 p-3 md:p-5 rounded-md border">
-						<div class=" flex items-center justify-between">
-							<h1 class=" font-semibold -mb-2 ">
-								Posts
-							</h1>
-							<div class=" flex items-center gap-2">
-								<span
-									class="border-[#376A7A] text-xs border text-[#376A7A]  rounded-md p-1 px-3 font-semibold">
+						<div class="flex items-center justify-between">
+							<h1 class="font-semibold -mb-2">Posts</h1>
+							<div class="flex items-center gap-2">
+								<span class="border-[#376A7A] text-xs border text-[#376A7A] rounded-md p-1 px-3 font-semibold">
 									{{ posts }}
 								</span>
-								<NuxtLink :to="`/user/${user.Id}`"
-									class="bg-[#376A7A] border-[#376A7A] border text-xs text-white rounded-md p-1 px-3 font-semibold">
-									Bekijken
-								</NuxtLink>
+								<NuxtLink :to="`/user/${user.Id}`" class="bg-[#376A7A] border-[#376A7A] border text-xs text-white rounded-md p-1 px-3 font-semibold"> Bekijken </NuxtLink>
 							</div>
-
 						</div>
-						<p class=" mt-2 opacity-70 leading-5">
-							Overzicht van alle post die jij hebt geplaats op het forum van ForumWave
-						</p>
+						<p class="mt-2 opacity-70 leading-5">Overzicht van alle post die jij hebt geplaats op het forum van ForumWave</p>
 					</div>
 				</div>
-				<div class=" mt-3">
+				<div class="mt-3">
 					<div class="bg-gray-50 p-3 md:p-5 rounded-md border">
-						<div class=" flex items-center justify-between">
-							<h1 class=" font-semibold -mb-2 ">
-								Comments
-							</h1>
-							<div class=" flex items-center gap-2">
-								<span
-									class="border-[#376A7A] text-xs border text-[#376A7A]  rounded-md p-1 px-3 font-semibold">
+						<div class="flex items-center justify-between">
+							<h1 class="font-semibold -mb-2">Comments</h1>
+							<div class="flex items-center gap-2">
+								<span class="border-[#376A7A] text-xs border text-[#376A7A] rounded-md p-1 px-3 font-semibold">
 									{{ comments }}
 								</span>
-								<NuxtLink :to="`/user/${user.Id}?tab=Comments`"
-									class="bg-[#376A7A] border-[#376A7A] border text-xs text-white rounded-md p-1 px-3 font-semibold">
-									Bekijken
-								</NuxtLink>
+								<NuxtLink :to="`/user/${user.Id}?tab=Comments`" class="bg-[#376A7A] border-[#376A7A] border text-xs text-white rounded-md p-1 px-3 font-semibold"> Bekijken </NuxtLink>
 							</div>
 						</div>
-						<p class=" mt-2 opacity-70 leading-5">
-							Overzicht van alle comments die jij hebt geplaats, op posts van andere gebruikers
-						</p>
+						<p class="mt-2 opacity-70 leading-5">Overzicht van alle comments die jij hebt geplaats, op posts van andere gebruikers</p>
 					</div>
 				</div>
 			</div>
 		</div>
-		<PostsCreateView v-model="status" />
 	</div>
 </template>
 
@@ -96,7 +74,7 @@
 	definePageMeta({
 		middleware: "auth",
 	});
-	
+
 	useSeoMeta({
 		title: "ForumWave - Account",
 		description: "Account informatie van de gebruiker",
@@ -110,7 +88,6 @@
 		twitterCard: "summary",
 	});
 
-	
 	const user = ref();
 	const posts = ref([]);
 	const comments = ref([]);
@@ -119,17 +96,12 @@
 		status: false,
 		type: "",
 		error: undefined,
-	})
+	});
 
-	const { data: User } = await useFetch("/api/users/me")
+	const { data: User } = await useFetch("/api/users/me");
 	user.value = User.value.user;
 	posts.value = User.value.posts;
 	comments.value = User.value.comments;
-
-
-	
-	
-	
 
 	const logout = async () => {
 		const { data, error } = await useFetch("/api/users/logout", {
@@ -139,6 +111,4 @@
 			navigateTo("/screen");
 		}
 	};
-
-
 </script>

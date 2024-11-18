@@ -39,8 +39,7 @@ input:-webkit-autofill:focus {
 .menu-enter-from,
 .menu-leave-to {
     @apply opacity-0;
-}
-
+} 
 
 @layer components {
     .btn-Input {
@@ -108,7 +107,7 @@ input:-webkit-autofill:focus {
 
 
 .tiptapEditor {
-    @apply h-[40vh] md:h-[60vh] appearance-none overflow-auto outline-none rounded-md;
+    @apply min-h-[30vh] md:min-h-[30vh] h-fit appearance-none overflow-auto outline-none rounded-md;
 }
 
 .tiptap {

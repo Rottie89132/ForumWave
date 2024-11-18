@@ -11,7 +11,7 @@
 							class="border-[#376A7A] border text-[#376A7A] p-2 w-fit rounded-xl flex items-center justify-center">
 							<icon name="bx:loader-circle" size="1.4em" :class="loading ? ' animate-spin' : ''"> </icon>
 						</button>
-						<PostsCreateButton v-model="status" />
+						<PostsCreateButton />
 					</div>
 				</div>
 				<hr class="w-full mt-2 -mb-1" />
@@ -66,7 +66,6 @@
 				</div>
 			</div>
 		</div>
-		<PostsCreateView v-model="status" />
 	</div>
 </template>
 
@@ -105,11 +104,7 @@
 	const itemsPages = ref(1);
 
 	const loading = ref(false);
-	const status = ref({
-		status: false,
-		type: "Post",
-		error: undefined,
-	});
+	
 	
 	const { data: User } = await useFetch("/api/users/me");
 	const { data: popularPosts } = await useFetch("/api/posts?popular=true");

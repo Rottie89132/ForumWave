@@ -7,12 +7,12 @@
                     class="text-gray-400 bg-white -mb-9 border-gray-300 border p-1 rounded-md"></icon>
                 <div class="group-hover:block hidden absolute mt-10 transition-all duration-200">
                     <div class="flex text-sm shadow-md flex-col justify-start items-start rounded-md">
-                        <button @click="openEditPostModal(false)" :disabled
+                        <NuxtLink :to="`/posts/edit/${id}`"	 
                             class="text-[#376A7A] w-full hover:bg-slate-100 bg-white border rounded-t-md p-1 px-2 flex items-center gap-2">
                             <icon name="bx:bxs-pencil" size="1.2em" class=""></icon>
                             <span>|</span>
                             <span>Bewerken</span>
-                        </button>
+                        </NuxtLink>
                         <button @click="OpenDeletePostModal(false, items?.posts?._id)" :disabled
                             class="text-[#376A7A] hover:bg-slate-100 bg-white border rounded-b-md p-1 px-2 flex items-center gap-2">
                             <icon v-if="!loading" name="bx:trash" size="1.2em" class=""> </icon>
@@ -80,12 +80,15 @@
 </template>
 
 <script setup lang="ts">
-    
+
+    import { useTimeAgo } from '@vueuse/core';
+    import useCompact from '@/composables/useCompact';
+    const id = useRoute().params.id;
+
 	defineProps<{
 		items: any;
         loading: boolean;
 		disabled: boolean;
-		openEditPostModal: (value: boolean) => void;
 		OpenDeletePostModal: (value: boolean, id: string) => void;
 		UseMakeHtml: (data: any) => string;
 		unlike: () => void;

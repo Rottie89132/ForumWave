@@ -30,7 +30,7 @@ export default defineEventHandler((event) => {
             let posts: any = [];
         
             const totalItems = popular ? await Posts.countDocuments({ "CreatedAt": { $lt: thresholdDate } }) : await Posts.countDocuments({ "CreatedAt": { $gt: thresholdDate } });
-            if (popular) posts = await Posts.find({ "CreatedAt": { $gt: thresholdWeeksDate, $lt: thresholdDate } }).sort({ "meta.points": -1, CreatedAt: -1 }).skip(skip).limit(itemsPerPage);
+            if (popular) posts = await Posts.find({ "CreatedAt": { $lt: thresholdDate } }).sort({ "meta.points": -1, CreatedAt: -1 }).skip(skip).limit(itemsPerPage);
             else posts = await Posts.find({ "CreatedAt": { $gt: thresholdDate } }).sort({ CreatedAt: -1 }).skip(skip).limit(itemsPerPage);
 
             const transformedData = await transformPosts(posts, user.Id);

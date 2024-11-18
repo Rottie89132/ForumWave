@@ -49,6 +49,9 @@
 </template>
 
 <script setup lang="ts">
+    import { useTimeAgo } from '@vueuse/core';
+    import useCompact from '@/composables/useCompact';
+    
     const hide = ref(true);
     
     defineProps<{

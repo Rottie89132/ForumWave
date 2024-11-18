@@ -1,5 +1,5 @@
 <template>
-    <div class="overflow-scroll w-full ">
+    <div class="overflow-scroll sticky z-50 w-full top-[3.40rem] ">
         <div class=" flex items-center md:hidden bg-gray-100 sticky left-0 p-2 pr-0 justify-end w-full">
             <button @click="submit" class="bg-[#376A7A] text-[#ffffff] px-4 py-1 md:w-fit rounded-lg font-semibold">
                 <icon v-if="loading" class=" animate-spin" name="bx:loader-circle" size="1.4em"></icon>

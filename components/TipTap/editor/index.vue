@@ -1,14 +1,8 @@
 <template>
 	<div v-if="editor">
-		<div :class="modalStatus.error ? ' border-red-600 border-2 ' : 'border-gray-200'"
-			class="border rounded-xl w-full h-full">
-			<TipTapMenu :submit="handleListData" :loading v-model="files"
-				class="hidden md:flex bg-gray-100 mb-2 p-2 border-b border-gray-200 rounded-t-xl items-center"
-				:editor="editor" />
-			<TiptapEditorContent class="tiptapEditor md:py-1 mb-2 md:mb-1 pt-3 px-3" :editor="editor" />
-			<TipTapMenu v-model="files"
-				class="flex md:hidden bg-gray-100 z-30 border-t rounded-b-xl border-gray-200 items-center"
-				:editor="editor" :submit="handleListData" :loading />
+		<div class=" w-full h-full">
+			<TipTapMenu :submit="handleListData" :loading v-model="files" class="flex bg-gray-100 mb-2 md:p-2 py-1 md:py-3 rounded-md items-center" :editor="editor" />
+			<TiptapEditorContent :class="modalStatus.error ? ' border-red-400 border-2 ' : ''" class="tiptapEditor bg-gray-100 md:py-2 mb-2 md:mb-1 py-3 px-3" :editor="editor" />
 		</div>
 	</div>
 </template>
